@@ -18,12 +18,17 @@ if(!$_SESSION["session_id"]=="root")
 	 function create_table()
 	 {
 	  form = document.form_create_tb;
-	  if (form.tableName.value == "")
-	  {
-	   alert("테이블 이름을 입력하세요.");
-	   form.tableName.focus();
-	   return false;
-	    
+	  
+	  if (form.tableName.value == "") {
+			alert("테이블 이름을 입력하세요.");
+			form.tableName.focus();
+			return false;
+	  }
+			
+	  else if (form.description.value == ""){
+			alert("테이블 설명을 입력하세요.");
+			form.description.focus();
+	   		return false;
 	  }
 	  else return true;
 	 }
@@ -32,8 +37,7 @@ if(!$_SESSION["session_id"]=="root")
    <title>관리자페이지 </title>
  </head>	
  <body>
-	관리자페이지<p/>
-	게시판관리<p/>
+ 	<h3>관리자 페이지에 접속하였습니다.</h3>
     <caption>게시판목록</caption>
     <table border="1" text-align = "center" >
 	   <tr align = "center">
@@ -45,8 +49,8 @@ if(!$_SESSION["session_id"]=="root")
 	   <tr>
 		 <td><a href="index.php?tbname=<?php echo $row[name]?>"><?php echo $row[name]?></a></td>
 		 <td><?php echo $row[description]?></td>
-		 <td><a href="#" onClick="location.href='admin_process.php?mode=update&name=<?php echo $row[name]?>'">수정</a> |
-			 <a href="#" onClick="location.href='admin_process.php?mode=delete&name=<?php echo $row[name]?>'">삭제</a></td>
+		 <td><a href="#" onClick="location.href='admin_process.php?mode=update&tbname=<?php echo $row[name]?>'">수정</a> |
+			 <a href="#" onClick="location.href='admin_process.php?mode=delete&tbname=<?php echo $row[name]?>'">삭제</a></td>
 	   </tr>
 	   <?php }?>
 	</table>

@@ -32,7 +32,16 @@
 
 function OpenWindow(file_name,width,height)
 {
- window.open(file_name,'open_win1','top=100,left=100,width='+width+',height='+height+',scrollbars=no');
+
+	var winHeight = document.body.clientHeight;	// 현재창의 높이
+	var winWidth = document.body.clientWidth;	// 현재창의 너비
+	var winX = window.screenLeft;	// 현재창의 x좌표
+	var winY = window.screenTop;	// 현재창의 y좌표
+
+	var popX = winX + (winWidth - width)/2;
+	var popY = winY + (winHeight - height)/2;
+ 	window.open(file_name,'open_win1', "width="+width+"px,height="+height+"px,top="+popY+",left="+popX,scrollbars=no);
+ //window.open(file_name,'open_win1','top=200,left=500,width='+width+',height='+height+',scrollbars=no');
 }
 //-->
 </script>
