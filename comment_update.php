@@ -23,20 +23,20 @@
 	
 	if(empty($w) || $w === 'w') { //$w 변수가 비어있거나 w인 경우
 		$msg = '작성';
-		$sql = 'insert into tb_freecomment values(null, ' .$bNo . ', ' . $coNo . ', "' . $coContent . '", "' . $coId . '", password("' . $coPassword . '"))';
+		$sql = 'insert into tb_freecomment values(null, ' .$bNo . ', "' . $tbname . '" , ' . $coNo . ', "' . $coContent . '", "' . $coId . '", password("' . $coPassword . '"))';
 
 		
 		if(empty($w)) { //$w 변수가 비어있다면,
 			$result = $db->query($sql);
 			
 			$coNo = $db->insert_id;
-			$sql = 'update tb_freecomment set co_order = co_no where co_no = ' . $coNo;
+			$sql = "update tb_freecomment set co_order = co_no where co_no = $coNo";
 		}
 		
 	} else if($w === 'u') { //작성
 		$msg = '수정';
 		
-		$sql = 'select count(*) as cnt from tb_freecomment where co_password=password("' . $coPassword . '") and co_no = ' . $coNo;
+		$sql = "select count(*) as cnt from tb_freecomment where co_password=password($coPassword) and co_no = $coNo and b_name = '$tbname'";
 		$result = $db->query($sql);
 		$row = $result->fetch_assoc();
 		
@@ -50,11 +50,11 @@
 			exit;	
 		}
 		
-		$sql = 'update tb_freecomment set co_content = "' . $coContent . '" where co_password=password("' . $coPassword . '") and co_no = ' . $coNo;
+		$sql = "update tb_freecomment set co_content = $coContent where co_password=password($coPassword) and co_no = $coNo and b_name = '$tbname'";
 		
 	} else if($w === 'd') { //삭제
 		$msg = '삭제';
-		$sql = 'select count(*) as cnt from tb_freecomment where co_password=password("' . $coPassword . '") and co_no = ' . $coNo;
+		$sql = "select count(*) as cnt from tb_freecomment where co_password=password($coPassword) and co_no = $coNo and b_name = '$tbname'";
 
 		$result = $db->query($sql);
 		$row = $result->fetch_assoc();
@@ -68,7 +68,7 @@
 <?php 
 			exit;	
 		}
-		$sql = 'delete from tb_freecomment where co_password=password("' . $coPassword . '") and co_no = ' . $coNo;
+		$sql = "delete from tb_freecomment where co_password=password($coPassword) and co_no = $coNo and b_name = '$tbname'";
 
 	} else {
 ?>
@@ -85,7 +85,7 @@
 ?>
 		<script>
 			alert('댓글이 정상적으로 <?php echo $msg?>되었습니다.');
-			location.replace("./view.php?bno=<?php echo $bNo?>");
+			location.replace("./view.php?tbname=<?php echo $tbname?>&bno=<?php echo $bNo?>");
 		</script>
 <?php
 	} else {
