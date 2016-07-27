@@ -1,9 +1,9 @@
 <?php
-	$sql = "select * from tb_freecomment where co_no=co_order and b_no=$bNo and b_name='$tbname'";
+	$sql = 'select * from tb_freecomment where co_no=co_order and b_no=' . $bNo;
 	$result = $db->query($sql);
 ?>
 <div id="commentView">
-	<form action="comment_update.php?tbname=<?php echo $tbbane?>" method="post">
+	<form action="comment_update.php" method="post">
 		<input type="hidden" name="bno" value="<?php echo $bNo?>">
 		<?php
 			while($row = $result->fetch_assoc()) {
@@ -22,7 +22,7 @@
 					<div class="commentContent"><?php echo $row['co_content']?></div>
 				</div>
 				<?php
-					$sql2 = "select * from tb_freecomment where co_no!=co_order and co_order =".$row['co_no']." and b_name = '$tbname'";
+					$sql2 = 'select * from tb_freecomment where co_no!=co_order and co_order=' . $row['co_no'];
 					$result2 = $db->query($sql2);
 				
 					while($row2 = $result2->fetch_assoc()) {
@@ -49,7 +49,7 @@
 		<?php } ?>
 	</form>
 </div>
-<form action="comment_update.php?tbname=<?php echo $tbname?>" method="post">
+<form action="comment_update.php" method="post">
 	<input type="hidden" name="bno" value="<?php echo $bNo?>">
 	<table>
 		<tbody>

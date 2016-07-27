@@ -65,7 +65,7 @@
 				<a href="./index.php?tbname=<?php echo $tbname?>">목록</a>
 			</div>
 		<div id="boardComment">
-			<?php require_once("./comment.php")?>
+			<?php require_once('./comment.php')?>
 		</div>
 		</div>
 	</article>

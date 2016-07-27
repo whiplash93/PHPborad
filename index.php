@@ -1,6 +1,5 @@
 <?php
 	require_once("dbconfig.php");
-	
 	if(isset($_GET['tbname'])) {
 		$tbname = $_GET['tbname'];
 	} else {
