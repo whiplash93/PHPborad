@@ -1,7 +1,7 @@
 <?php
 require_once("dbconfig.php");
 
-$query = " select * from tb_board ";
+$query = " select * from tb_board order by id ";
 $result = $db->query($query);
 
 if(!$_SESSION["session_id"]=="root")

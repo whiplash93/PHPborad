@@ -72,26 +72,41 @@ require_once("dbconfig.php");
 				<td>Extra</td>
 				<td colspan=2>명령</td>
 			</tr>
+			<form method="post" action="admin_field_process.php?mode=fd_update&tbname=<?php echo $tbname?>">
 		<?php while($row = $result->fetch_assoc())
 		{?>
 			<tr align="center" >
-				<td><?php echo $row['Field'];?></td>
+				<?php  
+				if($mode=="update" && $fdname ==  $row['Field']){
+					?><input type="hidden" name="before_field_name" class="textfield" id="field_0_3" type="text" value="<?php echo $row['Field']?>">
+						<input type="hidden" name="update_field_type" class="textfield" id="field_0_3" type="text" value="<?php echo $row['Type']?>">
+						<td><input name="update_field_name" class="textfield" id="field_0_3" type="text" value="<?php echo $row['Field']?>"></td>
+<?php     }else{?>
+<td><?php echo $row['Field'];?></td> 
+    <?php } ?>
 				<td><?php echo $row['Type'];?></td>
 				<td><?php echo $row['Null'];?></td>
 				<td><?php echo $row['Key'];?></td>
 				<td><?php echo ($row['Default'] == "")? "NONE" : $row['Default'];?></td> <!-- 삼항연산자를 사용해서 빈칸이면 NONE을 준다. 값이 빈칸이 아니면 테이블에 있는 값을 표시한다. -->
 				<td><?php echo $row['Extra'];?></td>
-				<td><a href="#" Onclick="location.href='admin_process.php?mode=update_field&field_name=<?php echo $row['Field']?>&tbname=<?php echo $tbname?>&field_type=<?php echo $row['Type']?>&field_length=<?php echo $row['Type']?>'">수정</a></td>
+				<?php 
+				if($mode=="update" && $fdname !=  $row['Field']){?> <!-- 필드네임값이 없을때. 즉 컬럼 수정하기 버튼을 누르기 전이다. --> 
+					<td><a href="#" Onclick="location.href='admin_process.php?mode=update&fdname=<?php echo $row['Field']?>&tbname=<?php echo $tbname?>&type=<?php  echo $row['Type']?>'">수정</a></td>
+				<?php }
+				if($mode=="update" && $fdname ==  $row['Field']){?> <!-- 필드네임값이 있으면. 즉 컬럼 수정하기 버튼을 누른 후. -->
+					<td><input type="submit" value="수정"></td>
+				<?php }?>
 				<td><a href="#" Onclick="location.href='admin_process.php?mode=delete_field&fdname=<?php echo $row['Field']?>&tbname=<?php echo $tbname?>'" >삭제</a></td>
 				
 			</tr>
  <?php }?>
+ 			</form>
 		</table>
 		<br/>
-		필드를 추가하거나 수정합니다. <br>
+		필드를 추가합니다. <br>
 		<font color="red" size="2">*추가시 마지막 필드 다음으로 추가됩니다.</font>
-		<div style="width:300px; height:200px; background-color:#eee; border:1px solid">
-		  <form action="admin_field_process.php" method="post">
+		<div style="width:300px; height:230px; background-color:#eee; border:1px solid">
+		  <form action="admin_field_process.php?mode=form" method="post">
 			<table border = 1>
 				<tr>
 					<td>필드</td>
@@ -193,7 +208,7 @@ require_once("dbconfig.php");
 					</td>
 				</tr>
 			</table>
-			<div style="width:50px; height:20px; margin:3px 0 0 50px; ">
+			<div style="width:50px; height:20px; margin:3px 0 0 100px; ">
 				<input name="do_save_data" type="submit" value="   저    장    " />
 		  </div>
 		  </form>
@@ -202,5 +217,5 @@ require_once("dbconfig.php");
 </html>
 <?php }
 	else
-		echo "<script>alert('잘못된 접근입니다.');location.href='index.php';</script>";
+		//echo "<script>alert('잘못된 접근입니다.');location.href='index.php';</script>";
 ?>

@@ -6,7 +6,7 @@
 	} else {
 		$tbname = 'tb_freeboard'; 
 	}		
-	$sql = " select * from tb_board where name = '$tbname'";
+	$sql = " select * from tb_board where name = '$tbname' ";
 	$result = $db->query($sql);
 	$row = $result->fetch_assoc();
 	$tbdesc = $row['description'];
@@ -118,7 +118,7 @@
 <html>
 <head>
 	<meta charset="utf-8" />
-	<title>자유게시판 </title>
+	<title>PHP게시판 활용</title>
 	<link rel="stylesheet" href="./css/normalize.css" />
 	<link rel="stylesheet" href="./css/board.css" />
 	<script>
@@ -131,11 +131,12 @@
 <body>
 <!-- 상단 테이블 나열 -->
 	<article class="boardArticle">
-		<?php 
-		$query = " select * from tb_board ";
+		<center>|<?php 
+		$query = " select * from tb_board order by id ";
 		$result = $db->query($query);
 		while($row = $result->fetch_assoc()) {?>
-		<h3><a href="index.php?tbname=<?php echo $row['name']?>"><?php echo $row['description']?></a> | </h3><?php }?> 
+		<B><font size="5" ><a href="index.php?tbname=<?php echo $row['name']?>"><?php echo $row['description']?></a></font></B> | <?php }?> 
+		</center><br>
 		<!-- 게시판 테이블에 있는대로 하이퍼링크 건 테이블이름 출력 -->
 <!-- 상단 테이블 나열 끝-->
 		<div id="boardList">
