@@ -1,6 +1,5 @@
 ﻿<?php
 	require_once('dbconfig.php');
-	
 	$w = '';
 	$coNo = 'null';
 	
@@ -13,7 +12,6 @@
 	//공통 변수
 	$bNo = $_POST['bno'];
 	$coPassword = $_POST['coPassword'];
-	
 	if($w !== 'd') {//$w 변수가 d일 경우 $coContent와 $coId가 필요 없음.
 		$coContent = $_POST['coContent'];
 		if($w !== 'u') {//$w 변수가 u일 경우 $coId가 필요 없음.
@@ -24,13 +22,12 @@
 	if(empty($w) || $w === 'w') { //$w 변수가 비어있거나 w인 경우
 		$msg = '작성';
 		$sql = 'insert into tb_freecomment values(null, ' .$bNo . ', "' . $tbname . '" , ' . $coNo . ', "' . $coContent . '", "' . $coId . '", password("' . $coPassword . '"))';
-
-		
 		if(empty($w)) { //$w 변수가 비어있다면,
 			$result = $db->query($sql);
-			
 			$coNo = $db->insert_id;
 			$sql = "update tb_freecomment set co_order = co_no where co_no = $coNo";
+			//4번째 컬럼인 co_order는 처음글쓸때 NULL 이라는 텍스트가 들어갔다가 방금 삽입된 코멘트의 번호로 바뀌게된다. 
+			
 		}
 		
 	} else if($w === 'u') { //작성

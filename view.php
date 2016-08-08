@@ -1,9 +1,10 @@
 <?php
 	require_once("dbconfig.php");
 	$bNo = $_GET['bno'];
+	$tbname = $_GET['tbname'];
 	if(!empty($bNo) && empty($_COOKIE[$tbname.'_' . $bNo])) {
 		$sql = "update ".$tbname." set b_hit = b_hit + 1 where b_no = ".$bNo;
-		$result = $db->query($sql); 
+		$result = $db->query($sql);
 		if(empty($result)) {
 			?>
 			<script>

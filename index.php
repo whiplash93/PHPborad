@@ -217,6 +217,7 @@
 			</div>
 			<div class="searchBox">
 				<form action="./index.php" method="get">
+					<input type="hidden" name="tbname" value="<?php echo $tbname?>">
 					<select name="searchColumn">
 						<option <?php echo $searchColumn=='b_title'?'selected="selected"':null?> value="b_title">제목</option>
 						<option <?php echo $searchColumn=='b_content'?'selected="selected"':null?> value="b_content">내용</option>

@@ -90,7 +90,7 @@ require_once("dbconfig.php");
 		<br/>
 		필드를 추가하거나 수정합니다. <br>
 		<font color="red" size="2">*추가시 마지막 필드 다음으로 추가됩니다.</font>
-		<div style="width:400px; height:220px; background-color:#eee; border:1px solid">
+		<div style="width:300px; height:200px; background-color:#eee; border:1px solid">
 		  <form action="admin_field_process.php" method="post">
 			<table border = 1>
 				<tr>
@@ -192,14 +192,8 @@ require_once("dbconfig.php");
 						<input name="field_null" id="field_0_7" type="checkbox" value="NULL">
 					</td>
 				</tr>
-				<tr>
-					<td>AUTO_INCREMENT</td>
-					<td>
-						<input name="field_extra" id="field_0_8" type="checkbox" value="AUTO_INCREMENT">
-					</td>
-				</tr>
 			</table>
-			<div style="width:50px; height:20px; margin:3px 0 0 160px; ">
+			<div style="width:50px; height:20px; margin:3px 0 0 50px; ">
 				<input name="do_save_data" type="submit" value="   저    장    " />
 		  </div>
 		  </form>

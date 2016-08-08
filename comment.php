@@ -1,9 +1,11 @@
 <?php
 	$sql = "select * from tb_freecomment where co_no=co_order and b_no=$bNo and b_name='$tbname'";
 	$result = $db->query($sql);
+	//실제 sql에 들어가게 되는 쿼리 ex) select * from tb_freecomment where co_no=co_order and b_no=44 and b_name='tb_freeboard'
+	//위와 같이 찾을 테이블명에는 따옴표가 붙어야한다. 
 ?>
 <div id="commentView">
-	<form action="comment_update.php?tbname=<?php echo $tbbane?>" method="post">
+	<form action="comment_update.php?tbname=<?php echo $tbname?>" method="post">
 		<input type="hidden" name="bno" value="<?php echo $bNo?>">
 		<?php
 			while($row = $result->fetch_assoc()) {
@@ -49,8 +51,9 @@
 		<?php } ?>
 	</form>
 </div>
-<form action="comment_update.php?tbname=<?php echo $tbname?>" method="post">
+<form action="comment_update.php" method="post">
 	<input type="hidden" name="bno" value="<?php echo $bNo?>">
+	<input type="hidden" name="tbname" value="<?php echo $tbname?>">
 	<table>
 		<tbody>
 			<tr>
