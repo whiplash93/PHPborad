@@ -1,10 +1,6 @@
 <?php
 require_once("dbconfig.php");
 	//테이블 생성 
-	
-// 	if ($mode<>"create" || $mode<>"update" || $mode<>"delete" || $mode<>"delete_field"){
-// 		echo "<script>alert('잘못된 접근입니다.');location.href='index.php';</script>";
-// 	}
 	if ($mode=="create"){
 		$sql = "create table $tableName (
 				b_no int unsigned not null primary key auto_increment,
@@ -22,7 +18,8 @@ require_once("dbconfig.php");
 		if($result){
 			$sql = "insert into tb_board (name, description) VALUES('$tableName','$description')";
 			$result = $db->query($sql);
-			echo "<script>alert('테이블을 생성하였습니다.');location.href='admin_index.php';</script>"; //테이블생성 성공
+			echo "<script>alert('테이블을 생성하였습니다.');location.href='admin_index.php';</script>"; 
+			//테이블생성 성공
 		}
 		else {"<script>alert('테이블을 생성실패.');location.href='admin_index.php';</script>";
 		} //테이블생성 실패
@@ -33,19 +30,21 @@ require_once("dbconfig.php");
 		$result = $db->query($sql); //DB에서 테이블 삭제
 		$sql = "delete from tb_board where name='$tbname'";
 		$result = $db->query($sql); //테이블에서 데이터 삭제
-		echo "<script>alert('테이블을 삭제하였습니다.');location.href='admin_index.php';</script>"; //테이블삭제 성공
+		echo "<script>alert('테이블을 삭제하였습니다.');location.href='admin_index.php';</script>"; 
+		//테이블삭제 성공
 	}
-
+	//필드 삭제
 	else if($mode=="delete_field"){
 		$sql = "alter table $tbname drop $fdname";
 		$result = $db->query($sql);
 		if($result){
-			echo "<script>alert('컬럼을 삭제 하였습니다.');history.go(-1);</script>"; //컬럼 삭제 성공
+			echo "<script>alert('컬럼을 삭제 하였습니다.');history.go(-1);</script>";
+			 //컬럼 삭제 성공
 		}
 		else {echo "<script>alert('컬럼 삭제 실패 .');history.go(-1);</script>";
 		} //컬럼 삭제 실패 
 	}
-	//테이블 수정
+	//테이블 수정을 눌렀을때. 
 	else if($mode=="update"){
 		$query = " DESC $tbname ";
 		$result = $db->query($query);
@@ -76,11 +75,12 @@ require_once("dbconfig.php");
 		<?php while($row = $result->fetch_assoc())
 		{?>
 			<tr align="center" >
-				<?php  
+				<?php   //테이블 수정하기 상태에서 필드네임 매개변수로 넘어온게 지금 돌리고있는 쿼리의 Field명과 일치한다면
 				if($mode=="update" && $fdname ==  $row['Field']){
 					?><input type="hidden" name="before_field_name" class="textfield" id="field_0_3" type="text" value="<?php echo $row['Field']?>">
 						<input type="hidden" name="update_field_type" class="textfield" id="field_0_3" type="text" value="<?php echo $row['Type']?>">
 						<td><input name="update_field_name" class="textfield" id="field_0_3" type="text" value="<?php echo $row['Field']?>"></td>
+						<!-- 히든타입으로 바뀌기전의 필드네임, 필드 데이터형식을 만들어주고, 인풋텍스트 타입으로 바뀔필드의 이름을 입력할 수 있는 공간을 만들어준다. -->
 <?php     }else{?>
 <td><?php echo $row['Field'];?></td> 
     <?php } ?>
@@ -103,10 +103,10 @@ require_once("dbconfig.php");
  			</form>
 		</table>
 		<br/>
-		필드를 추가합니다. <br>
-		<font color="red" size="2">*추가시 마지막 필드 다음으로 추가됩니다.</font>
+		컬럼을 추가합니다. <br>
+		<font color="red" size="2">*추가시 마지막 컬럼 다음으로 추가됩니다.</font>
 		<div style="width:300px; height:230px; background-color:#eee; border:1px solid">
-		  <form action="admin_field_process.php?mode=form" method="post">
+		  <form action="admin_field_process.php?mode=form&tbname=<?php echo $tbname?>" method="post">
 			<table border = 1>
 				<tr>
 					<td>필드</td>
@@ -193,7 +193,7 @@ require_once("dbconfig.php");
 					<td>기본값</td>
 					<td>
 						<select name="field_default_type">
-							<option selected="selected" value="NONE">None</option>
+							<option selected="selected" value="">None</option>
 							<option value="USER_DEFINED">As defined:</option>
 							<option value="NULL">NULL</option>
 							<option value="CURRENT_TIMESTAMP">CURRENT_TIMESTAMP</option>
@@ -213,9 +213,46 @@ require_once("dbconfig.php");
 		  </div>
 		  </form>
 		</div>
+		<?php 
+		$query = " SELECT * FROM tb_view WHERE b_tbname = '$tbname'";
+		$result = $db->query($query);
+		?>
+		</p>
+		<form method="post" action="admin_field_process.php?mode=seqchange&tbname=<?php echo $tbname?>">
+		    <caption>실제 테이블 뷰 정보</caption>
+			<table border =1 >
+						<tr align="center">
+							<td>필드명</td>
+							<td>테이블명</td>
+							<td>노출여부</td>
+							<td>보여질 텍스트</td>
+							<td>순서변경</td>
+						</tr>
+					<?php while($row = $result->fetch_assoc())
+					{?>
+						<tr align="center" >
+							<td><?php echo $row['b_fname'];?></td>
+							<td><?php echo $row['b_tbname'];?></td>
+							<td>
+							<?php if ($row['b_visible'] == "1") {?>
+													<input type="radio"  name="<?php echo $row['b_seq'];?>" checked="on"  value="true">노출
+													<input type="radio"  name="<?php echo $row['b_seq'];?>" value="false">노출안함
+													<?php }
+												else {?>
+													<input type="radio"  name="<?php echo $row['b_seq'];?>" value="true">노출
+													<input type="radio"  name="<?php echo $row['b_seq'];?>" checked="on" value="false">노출안함
+													<?php }?>
+							</td>
+							<td><?php echo $row['b_description'];?></td>
+						<td> <a href ="#">위로</a> | <a href ="#">아래로</a> </td>
+						</tr>
+						<?php }?>
+					</table>
+
+		
   </body>
 </html>
 <?php }
 	else
-		//echo "<script>alert('잘못된 접근입니다.');location.href='index.php';</script>";
+		echo "<script>alert('잘못된 접근입니다.');location.href='index.php';</script>";
 ?>

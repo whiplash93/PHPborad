@@ -157,14 +157,11 @@
 						<th scope="col" class="author">작성자</th>
 						<th scope="col" class="date">작성일</th>
 						<th scope="col" class="hit">조회</th>
-						<th scope="col" class="hit">파일여부</th>
+						<th scope="col" class="add">파일여부</th>
 					</tr>
 				</thead>
 				<tbody>
 						<?php
-// 						$query = " select * from $tbname ";
-// 						$result = $db->query($query);
-						
 						$sql = "select * from $tbname $searchSql order by b_no desc $sqlLimit"; //원하는 개수만큼 가져온다. (0번째부터 20번째까지
 						$result = $db->query($sql);
 						$i=0;
@@ -198,9 +195,11 @@
 							<td class="author"><?php echo $row['b_id']?></td>
 							<td class="date"><?php echo $row['b_date']?></td>
 							<td class="hit"><?php echo $row['b_hit']?></td>
-							<td><?php if($row['b_file'] != null){?>&nbsp;&nbsp;O
-							<?php }else{ ?>
-							&nbsp;&nbsp;X  <?php }?>
+							<td class="add"><?php if($row['b_file'] != null){?>
+																       O
+														<?php } else{ ?>
+																	   X  
+													      <?php }?>
 							</td>
 						</tr>
 						<?php
