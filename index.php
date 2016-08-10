@@ -135,7 +135,7 @@
 		$query = " select * from tb_board order by id ";
 		$result = $db->query($query);
 		while($row = $result->fetch_assoc()) {?>
-		<B><font size="5" ><a href="index.php?tbname=<?php echo $row['name']?>"><?php echo $row['description']?></a></font></B> | <?php }?> 
+		<font size="5" ><a href="index.php?tbname=<?php echo $row['name']?>"><?php echo $row['description']?></a></font> | <?php }?> 
 		</center><br>
 		<!-- 게시판 테이블에 있는대로 하이퍼링크 건 테이블이름 출력 -->
 <!-- 상단 테이블 나열 끝-->

@@ -3,15 +3,15 @@ require_once("dbconfig.php");
 
 $query = "select b_file, b_filedate from $tbname where b_no=".$_GET['num'];
 $result = $db->query($query);
+$row = $result->fetch_assoc();
 
-$result = $result->fetch_assoc();
+$b_filedate = $row['b_filedate'];
 
 $dir = "./upload/";
-$filename = iconv("UTF-8","CP949", $result['b_file']);
-$filedate = iconv("UTF-8","CP949", $result['b_filedate']);
-
+$filename = iconv("UTF-8","CP949", $row['b_file']);
+$filedate = iconv("UTF-8","CP949", $row['b_filedate']);
 if(file_exists($dir.$filedate))
-{
+{ 
 	header("Content-Type: Application/octet-stream");
 	header("Content-Disposition: attachment; filename=".$filename);
 	header("Content-Transfer-Encoding: binary");

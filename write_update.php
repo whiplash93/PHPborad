@@ -22,11 +22,12 @@
 	$error = $_FILES['File']['error'];
 	$name = $_FILES['File']['name'];
 	$ext = array_pop(explode('.', $name));
-	
 	$File = iconv("UTF-8","EUC-KR",$_FILES['File']['name']);	// 기존첨부파일명
 	if($File){ //파일 첨부가 되있다면
-		$Filedate = $tbname.'_'.$name.'_'.$time[1].substr($time[0],2,6).'_'.strtoupper($ext);	// 새로운첨부파일명  테이블명_파일명_마이크로타임_확장자
+		$Filedate = $tbname.'_'.$time[1].substr($time[0],2,6);	// 새로운첨부파일명  테이블명_마이크로타임
 	}
+	
+	
 
 
 if( $error != 4){	
@@ -78,13 +79,21 @@ if( $error != 4){
 //글 수정
 if(isset($bNo)) {
 	//수정 할 글의 비밀번호가 입력된 비밀번호와 맞는지 체크
-	$sql = 'select count(b_password) as cnt from tb_freeboard where b_password=password("' . $bPassword . '") and b_no = ' . $bNo;
+	$sql = 'select count(b_password) as cnt from ' . $tbname . ' where b_password=password("' . $bPassword . '") and b_no = ' . $bNo;
 	$result = $db->query($sql);
 	$row = $result->fetch_assoc();
 	
 	//비밀번호가 맞다면 업데이트 쿼리 작성
 	if($row['cnt']) {
-		$sql = 'update tb_freeboard set b_title="' . $bTitle . '", b_content="' . $bContent . '" where b_no = ' . $bNo;
+		if($b_file==''){
+		$sql = 'update ' . $tbname . ' set b_title="' . $bTitle . '", b_content="' . $bContent . '", b_file="' . $name . '", b_filedate="' . $Filedate .'" where b_no = ' . $bNo;
+		echo $sql;
+		}
+		else{
+		$sql = 'update ' . $tbname . ' set b_title="' . $bTitle . '", b_content="' . $bContent . '" where b_no = ' . $bNo;
+		echo "b_file : $b_file";
+		echo $sql;
+		}
 		$msgState = '수정';
 	//틀리다면 메시지 출력 후 이전화면으로
 	} else {

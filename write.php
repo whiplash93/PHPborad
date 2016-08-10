@@ -72,17 +72,18 @@
 								# 'File'의 값이 true = 데이터 가져옴, 'File'의 값이 false = null
 								echo isset($row['b_file'])?$row['b_file']:null
 							?>
+							<input type="hidden" name="b_file" value="<?php  echo isset($row['b_file'])?$row['b_file']:null?>" />
 							<?php
 								# $idx 값이 존재한다면,
 								if(isset($bNo)){
-								
-								# 'File'가 빈값이 아니면,
-								if($row['b_file'] != ""){
-								
-								# '★기존에 등록했던 파일 이름' 메시지 출력
-								echo "<strong style='color:red; font-size:12px;'>★기존에 등록했던 파일 이름</strong>";
-								?><br/> <a href="">삭제</a><?php
-								}	
+									# 'File'가 빈값이 아니면,
+									if($row['b_file'] != ""){
+										# '★기존에 등록했던 파일 이름' 메시지 출력
+										echo "<strong style='color:red; font-size:12px;'>★기존에 등록했던 파일 이름</strong>";
+										?><br/>
+										 <a href="#" onClick="location.href='delete_update.php?bNo=<?php echo $bNo?>&mode=update&tbname=<?php echo $tbname?>'">삭제</a>
+										<?php
+									}	
 								}
 							?>
 							</td>

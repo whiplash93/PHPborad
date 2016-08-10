@@ -1,8 +1,5 @@
 <?php
 	require_once("dbconfig.php");
-	
-	
-	
 	//컬럼 추가
 		if ($mode == 'form'){
 			if($field_null != 'Null'){
@@ -70,7 +67,31 @@
 		
 		
 //실제 테이블 뷰 순서변경
-		if ($mode == 'seqchange')
-		
+		if ($mode == 'visiblechange'){
+			$i=1;
+			while (isset($b_fname[$i])){
+				echo $b_fname[$i];
+				echo $visible[$i]."\n";
+				if($visible[$i] == 'true') {
+					$visible[$i]= '1';
+				}
+				else{
+					$visible[$i]= '0';
+				}
+				$sql = "UPDATE  tb_view SET b_visible= '$visible[$i]' WHERE b_fname = '$b_fname[$i]' and b_tbname = '$tbname'";
+				$result = $db->query($sql);
+ 				$i++;
+ 				?>
+ 				<script>
+ 				alert('노출설정을 변경하였습니다.');
+ 				location.replace("./admin_process.php?mode=update&tbname=<?= $tbname?>");
+ 				</script>
+ 				<?php 
+			}
+		}
+		if($mode == 'dd'){
+			$sql = 'update tb_freeboard set b_title="' . $bTitle . '", b_content="' . $bContent . '" where b_no = ' . $bNo;
+		}
+	
 		
 ?>

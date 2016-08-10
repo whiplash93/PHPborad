@@ -1,6 +1,9 @@
 <?php
 require_once("dbconfig.php");
-	//테이블 생성 
+//admin_index.php 의 기능부분.
+//모드 매개변수에 따라서 작동함	
+
+//테이블 생성 
 	if ($mode=="create"){
 		$sql = "create table $tableName (
 				b_no int unsigned not null primary key auto_increment,
@@ -214,11 +217,11 @@ require_once("dbconfig.php");
 		  </form>
 		</div>
 		<?php 
-		$query = " SELECT * FROM tb_view WHERE b_tbname = '$tbname'";
+		$query = " SELECT * FROM tb_view WHERE b_tbname = '$tbname' ORDER BY b_seq";
 		$result = $db->query($query);
 		?>
 		</p>
-		<form method="post" action="admin_field_process.php?mode=seqchange&tbname=<?php echo $tbname?>">
+		<form method="post" action="admin_field_process.php?mode=visiblechange&tbname=<?php echo $tbname?>">
 		    <caption>실제 테이블 뷰 정보</caption>
 			<table border =1 >
 						<tr align="center">
@@ -228,27 +231,34 @@ require_once("dbconfig.php");
 							<td>보여질 텍스트</td>
 							<td>순서변경</td>
 						</tr>
-					<?php while($row = $result->fetch_assoc())
+					<?php
+					$i=1;
+					 while($row = $result->fetch_assoc())
+						
 					{?>
 						<tr align="center" >
-							<td><?php echo $row['b_fname'];?></td>
+							<td><?php echo $row['b_fname']?></td>
+							<input type ="hidden" name="b_fname[<?php echo $i?>]" value="<?php echo $row['b_fname']?>">
 							<td><?php echo $row['b_tbname'];?></td>
 							<td>
 							<?php if ($row['b_visible'] == "1") {?>
-													<input type="radio"  name="<?php echo $row['b_seq'];?>" checked="on"  value="true">노출
-													<input type="radio"  name="<?php echo $row['b_seq'];?>" value="false">노출안함
+													<input type="radio"  name="visible[<?= $i ?>]" checked="on"  value="true">노출
+													<input type="radio"  name="visible[<?= $i ?>]" value="false">노출안함
 													<?php }
 												else {?>
-													<input type="radio"  name="<?php echo $row['b_seq'];?>" value="true">노출
-													<input type="radio"  name="<?php echo $row['b_seq'];?>" checked="on" value="false">노출안함
-													<?php }?>
+													<input type="radio"  name="visible[<?= $i ?>]" value="true">노출
+													<input type="radio"  name="visible[<?= $i ?>]" checked="on" value="false">노출안함
+											 <?php }?>
 							</td>
 							<td><?php echo $row['b_description'];?></td>
 						<td> <a href ="#">위로</a> | <a href ="#">아래로</a> </td>
 						</tr>
-						<?php }?>
+						<?php
+						$i++;
+						}?>
 					</table>
-
+					<input type="submit" value="저  장" >
+		</form>
 		
   </body>
 </html>
