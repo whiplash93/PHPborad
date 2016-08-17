@@ -2,7 +2,10 @@
 require_once("dbconfig.php");
 //admin_index.php 의 기능부분.
 //모드 매개변수에 따라서 작동함	
-
+if(!$_SESSION["session_id"]=="root")
+{
+	echo "<script>alert('관리자만 접근할 수 있습니다.');location.href='index.php';</script>";
+}
 //테이블 생성 
 	if ($mode=="create"){
 		$sql = "create table $tableName (
@@ -219,6 +222,8 @@ require_once("dbconfig.php");
 		<?php 
 		$query = " SELECT * FROM tb_view WHERE b_tbname = '$tbname' ORDER BY b_seq";
 		$result = $db->query($query);
+		$count = "select count(b_seq) from tb_view where b_tbname = '$tbname'";
+		$res = $db->query($count);
 		?>
 		</p>
 		<form method="post" action="admin_field_process.php?mode=visiblechange&tbname=<?php echo $tbname?>">
@@ -241,17 +246,30 @@ require_once("dbconfig.php");
 							<input type ="hidden" name="b_fname[<?php echo $i?>]" value="<?php echo $row['b_fname']?>">
 							<td><?php echo $row['b_tbname'];?></td>
 							<td>
-							<?php if ($row['b_visible'] == "1") {?>
+							<?php if ($row['b_visible'] == "1") { ?>
 													<input type="radio"  name="visible[<?= $i ?>]" checked="on"  value="true">노출
 													<input type="radio"  name="visible[<?= $i ?>]" value="false">노출안함
 													<?php }
-												else {?>
+												else if($row['b_visible'] == "0") {?>
 													<input type="radio"  name="visible[<?= $i ?>]" value="true">노출
 													<input type="radio"  name="visible[<?= $i ?>]" checked="on" value="false">노출안함
 											 <?php }?>
 							</td>
 							<td><?php echo $row['b_description'];?></td>
-						<td> <a href ="#">위로</a> | <a href ="#">아래로</a> </td>
+						<td> 
+						<?php if( $row['b_seq'] == 1){ //순서가 첫번째일경우 ?>
+							위로 |
+							<a href ="#" Onclick="location.href='admin_field_process.php?mode=seqdown&seq=<?= $row['b_seq']?>&tbname=<?php echo $tbname?>'">아래로</a></td>
+							<!--  순서가 첫번째이면 순거변경 위로 비활성화 --> 
+							<?php }
+						else if( $row['b_seq'] == $res){ ?>
+							<a href ="#" Onclick="location.href='admin_field_process.php?mode=sequp&seq=<?= $row['b_seq']?>&tbname=<?php echo $tbname?>'">위로</a> | 
+							아래로</td>
+						<?php }
+						else{?>
+							<a href ="#" Onclick="location.href='admin_field_process.php?mode=sequp&seq=<?= $row['b_seq']?>&tbname=<?php echo $tbname?>'">위로</a> |
+							<a href ="#" Onclick="location.href='admin_field_process.php?mode=seqdown&seq=<?= $row['b_seq']?>&tbname=<?php echo $tbname?>'">아래로</a></td>
+					<?php }?>
 						</tr>
 						<?php
 						$i++;

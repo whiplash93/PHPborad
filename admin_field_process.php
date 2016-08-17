@@ -1,6 +1,11 @@
 <?php
 	require_once("dbconfig.php");
 	//컬럼 추가
+	if(!$_SESSION["session_id"]=="root")
+	{
+		echo "<script>alert('관리자만 접근할 수 있습니다.');location.href='index.php';</script>";
+	}
+		
 		if ($mode == 'form'){
 			if($field_null != 'Null'){
 				$field_null = 'NOT NULL';
@@ -67,14 +72,12 @@
 		
 		
 //실제 테이블 뷰 순서변경
-		if ($mode == 'visiblechange'){
+		if ($mode == 'visiblechange'){//모드 매개변수가 visiblechange즉 노출설정 변경모드라면
 			$i=1;
 			while (isset($b_fname[$i])){
-				echo $b_fname[$i];
-				echo $visible[$i]."\n";
 				if($visible[$i] == 'true') {
 					$visible[$i]= '1';
-				}
+				} //트루면 1로, false면 0으로 바꿔주는 작업
 				else{
 					$visible[$i]= '0';
 				}
@@ -89,8 +92,58 @@
  				<?php 
 			}
 		}
-		if($mode == 'dd'){
-			$sql = 'update tb_freeboard set b_title="' . $bTitle . '", b_content="' . $bContent . '" where b_no = ' . $bNo;
+		//테이블 컬럼 순서변경 모드
+		if($mode == 'sequp'){
+			//b_seq는 admin process에서 넘겨주는 매개변수 b_seq 의 값이다.
+			$nummin = $seq-1; //b_seq는 admin process에서 넘겨주는 매개변수 b_seq 의 값이다.
+			$sql =  "UPDATE  tb_view SET b_seq= 0 WHERE b_tbname = '$tbname' AND b_seq = $nummin";
+			$result = $db->query($sql);
+			$sql =  "UPDATE  tb_view SET b_seq= $nummin WHERE b_tbname = '$tbname' AND b_seq = $seq";
+			$result = $db->query($sql);
+			$sql =  "UPDATE  tb_view SET b_seq= $seq WHERE b_tbname = '$tbname' AND b_seq = 0";
+			$result = $db->query($sql);
+			
+			if ($result){
+				?>
+							<script>
+								alert(' 순서 변경이 완료되었습니다.');
+								location.replace("./admin_process.php?mode=update&tbname=<?php echo $tbname?>");
+							</script>
+<?php  }
+			else{
+			?>
+							<script>
+								alert(' 오류 : 컬럼 순서 변경실패.');
+								location.replace("./admin_process.php?mode=update&tbname=<?php echo $tbname?>");
+							</script>
+							<?php
+			}
+		}
+		if($mode == 'seqdown'){
+			//b_seq는 admin process에서 넘겨주는 매개변수 b_seq 의 값이다.
+			$numplus = $seq+1; //b_seq는 admin process에서 넘겨주는 매개변수 b_seq 의 값이다.
+			$sql =  "UPDATE  tb_view SET b_seq= 0 WHERE b_tbname = '$tbname' AND b_seq = $numplus";
+			$result = $db->query($sql);
+			$sql =  "UPDATE  tb_view SET b_seq= $numplus WHERE b_tbname = '$tbname' AND b_seq = $seq";
+			$result = $db->query($sql);
+			$sql =  "UPDATE  tb_view SET b_seq= $seq WHERE b_tbname = '$tbname' AND b_seq = 0";
+			$result = $db->query($sql);
+			
+			if ($result){
+				?>
+							<script>
+								alert(' 순서 변경이 완료되었습니다.');
+								location.replace("./admin_process.php?mode=update&tbname=<?php echo $tbname?>");
+							</script>
+<?php  }
+			else{
+			?>
+							<script>
+								alert(' 오류 : 컬럼 순서 변경실패.');
+								location.replace("./admin_process.php?mode=update&tbname=<?php echo $tbname?>");
+							</script>
+							<?php
+			}
 		}
 	
 		

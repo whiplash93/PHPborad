@@ -10,33 +10,21 @@
 	$b_fname = array();
 	$b_seq = array();
 	$b_description = array();
-	$class_array[0] = null;
-	//
+	$class_array = array('null','no','title','author','date','hit','add');
+	// 
 	$sql =	"SELECT * FROM tb_view WHERE b_tbname = '$tbname' AND b_visible = '1' ORDER BY b_seq";
 	$result = $db->query($sql);
 	$k=1;
 	$j=1;
-	//반복문으로 visible이 true인 컬럼들만 배열에 담는다.	
-		while($row = $result->fetch_assoc()){
-			$b_fname[$k] = $row['b_fname'];
-			$b_seq[$k] = $row['b_seq'];
-			$b_description[$k] = $row['b_description'];
-			switch ($row['b_fname']){
-				case 'b_no'  : $class_array[$k] = 'no';
-					break;
-				case 'b_title' : $class_array[$k] = 'title';
-					break;
-				case 'b_id' : $class_array[$k] = 'author';
-					break;
-				case 'b_date' : $class_array[$k] = 'date';
-					break;
-				case 'b_hit' : $class_array[$k] = 'hit';
-					break;
-			default : 
-					break;
-			}
-			$k++;
-		}
+	while($row = $result->fetch_assoc())
+	{
+		$b_fname[$k] = $row['b_fname'];
+		$b_seq[$k] = $row['b_seq'];
+		$b_description[$k] = $row['b_description'];
+		$k++;
+		echo  $row['b_fname'];
+		echo  $k;
+	}
 	
 	$sql = " select * from tb_board where name = '$tbname' ";
 	$result = $db->query($sql);
@@ -166,6 +154,10 @@
 		<center>|<?php 
 		$query = " select * from tb_board order by id ";
 		$result = $db->query($query);
+		
+		$query2 = " select * from tb_view WHERE b_tbname = '$tbname' order by seq ";
+		$result2 = $db->query($query);
+		$row2=$result2->fetch_assoc();
 		while($row = $result->fetch_assoc()) {?>
 		<font size="5" ><a href="index.php?tbname=<?php echo $row['name']?>"><?php echo $row['description']?></a></font> | <?php }?> 
 		</center><br>
@@ -178,15 +170,19 @@
 				{?>
 				<div class="login">
 				
-				<a href="#" onClick="location.href='admin_index.php';">관리자 페이지로 </a>(<a href="#" onClick="location.href='login_ok.php?logout=yes';">로그아웃</a>)</div>
+				<a href="#" onClick="location.href='admin_index.php';">관리자 페이지로</a>(<a href="#" onClick="location.href='login_ok.php?logout=yes';">로그아웃</a>)</div>
 				<?php }else{ ?>
 				<div class="login"><a href="#" onClick="OpenWindow('login_index.php','300','130')">관리자 로그인</a></div>
 				<?php }?>
 				<thead>
 					<tr>
-					<?php for($i =1; $i < $k; $i++) {?>
-						<th scope="col" class="<?php echo $class_array[$i]?>"><?php echo $b_description[$i]?></th>
-						<?php }?>
+			<?php 
+			echo 'dddddddddd';
+			while ($j < $k-1){?>
+						<th scope="col" class="<?= $class_array[$j]?>"><?= $b_description[$j]?></th>
+						<?php echo $class_array[$j] , $b_description[$j]?>
+						$j++;
+			<?php }?>
 					</tr>
 				</thead>
 				<tbody>
@@ -212,26 +208,24 @@
 								
 								$Num = $boardNum - $i;
 								$i++;
-								if($Num <= 0){ 
-									//글 번호가 0보다 같거나 작으면
+								if($Num <= 0){ //글 번호가 0보다 같거나 작으면
 									//아무것도 실행하지 않음으로써 열을 다 지운다.
 									//0보다 큰 경우면
 								}else{?>
-						<tr> 
-						<?php for($a=1; $a < $k ; $a++) { // 반복문으로 각 시퀀스에 따라서 자료들을 출력함.?>
-							<?php if ($class_array[$a] == 'no'){?> 
-								<td class="no"><?= $Num?></td><?}?>
-							<?php if ($class_array[$a] == 'title') {?>
-								<td class="title">
-									<a href="./view.php?tbname=<?= $tbname?>&bno=<?= $row['b_no']?>"><?= $row['b_title']?></a>
-									</td><?}?>
-							<?php if ($class_array[$a] == 'author'){ ?>
-								<td class="author"><?= $row['b_id']?></td><?}?>
-							<?php if ($class_array[$a] == 'date'){?>
-								<td class="date"><?= $row['b_date']?></td><?}?>
-							<?php if ($class_array[$a] == 'hit'){?>
-								<td class="hit"><?= $row['b_hit']?></td><?}?>
-						<?php }?>
+						<tr>
+							<td class="no"><?php echo $Num?></td>
+							<td class="title">
+								<a href="./view.php?tbname=<?php echo $tbname?>&bno=<?php echo $row['b_no']?>"><?php echo $row['b_title']?></a>
+							</td>
+							<td class="author"><?php echo $row['b_id']?></td>
+							<td class="date"><?php echo $row['b_date']?></td>
+							<td class="hit"><?php echo $row['b_hit']?></td>
+							<td class="add"><?php if($row['b_file'] != null){?>
+																       O
+														<?php } else{ ?>
+																	   X  
+													      <?php }?>
+							</td>
 						</tr>
 						<?php
 								}
