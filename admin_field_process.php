@@ -24,6 +24,12 @@
 			}
 			$result = $db->query($sql);
 			if ($result){
+				$count = "select count(b_seq) as cnt from tb_view where b_tbname = '$tbname'";
+				$res = $db->query($count);
+				$row = $res->fetch_assoc();
+				$count = $row['cnt']+1;
+				$sql = "INSERT INTO tb_view(b_fname, b_tbname, b_visible, b_seq, b_description) VALUES ('$field_name', '$tbname', 1, $count, '$field_desc')";
+				$result = $db->query($sql);
 				?>
 				<script>
 					alert('컬럼이 추가 되었습니다.');
@@ -51,7 +57,7 @@
 			$update_fdname = $_POST['update_field_name'];
 			
 			
-			$sql = "ALTER TABLE `$tbname` CHANGE `$before_fdname` `$update_fdname` $type";
+			$sql = "UPDATE  tb_view SET b_description = `$update` WHERE b_description = '$before' AND b_tbname = $tbname";
 			$result = $db->query($sql);
 			echo $sql;
 			if ($result){
@@ -106,14 +112,12 @@
 			if ($result){
 				?>
 							<script>
-								alert(' 순서 변경이 완료되었습니다.');
 								location.replace("./admin_process.php?mode=update&tbname=<?php echo $tbname?>");
 							</script>
 <?php  }
 			else{
 			?>
 							<script>
-								alert(' 오류 : 컬럼 순서 변경실패.');
 								location.replace("./admin_process.php?mode=update&tbname=<?php echo $tbname?>");
 							</script>
 							<?php
@@ -132,14 +136,12 @@
 			if ($result){
 				?>
 							<script>
-								alert(' 순서 변경이 완료되었습니다.');
 								location.replace("./admin_process.php?mode=update&tbname=<?php echo $tbname?>");
 							</script>
 <?php  }
 			else{
 			?>
 							<script>
-								alert(' 오류 : 컬럼 순서 변경실패.');
 								location.replace("./admin_process.php?mode=update&tbname=<?php echo $tbname?>");
 							</script>
 							<?php

@@ -21,20 +21,6 @@
 			$b_fname[$k] = $row['b_fname'];
 			$b_seq[$k] = $row['b_seq'];
 			$b_description[$k] = $row['b_description'];
-			switch ($row['b_fname']){
-				case 'b_no'  : $class_array[$k] = 'no';
-					break;
-				case 'b_title' : $class_array[$k] = 'title';
-					break;
-				case 'b_id' : $class_array[$k] = 'author';
-					break;
-				case 'b_date' : $class_array[$k] = 'date';
-					break;
-				case 'b_hit' : $class_array[$k] = 'hit';
-					break;
-			default : 
-					break;
-			}
 			$k++;
 		}
 	
@@ -219,18 +205,20 @@
 								}else{?>
 						<tr> 
 						<?php for($a=1; $a < $k ; $a++) { // 반복문으로 각 시퀀스에 따라서 자료들을 출력함.?>
-							<?php if ($class_array[$a] == 'no'){?> 
-								<td class="no"><?= $Num?></td><?}?>
-							<?php if ($class_array[$a] == 'title') {?>
+							<?php if ($b_fname[$a] == 'b_no'){?> 
+								<td class="no"><?= $Num?></td><?}
+								else if ($b_fname[$a] == 'b_title') {?>
 								<td class="title">
 									<a href="./view.php?tbname=<?= $tbname?>&bno=<?= $row['b_no']?>"><?= $row['b_title']?></a>
-									</td><?}?>
-							<?php if ($class_array[$a] == 'author'){ ?>
-								<td class="author"><?= $row['b_id']?></td><?}?>
-							<?php if ($class_array[$a] == 'date'){?>
-								<td class="date"><?= $row['b_date']?></td><?}?>
-							<?php if ($class_array[$a] == 'hit'){?>
-								<td class="hit"><?= $row['b_hit']?></td><?}?>
+									</td><?}
+								else if ($b_fname[$a] == 'b_id'){ ?>
+								<td class="author"><?= $row['b_id']?></td><?}
+								else if ($b_fname[$a] == 'b_date'){?>
+								<td class="date"><?= $row['b_date']?></td><?}
+								 else if ($b_fname[$a] == 'b_hit'){?>
+								<td class="hit"><?= $row['b_hit']?></td><?}
+								 else{?>
+								<td class="add"><?= $row[$b_fname[$a]]?></td><?}?> 
 						<?php }?>
 						</tr>
 						<?php
