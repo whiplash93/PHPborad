@@ -222,8 +222,10 @@ if(!$_SESSION["session_id"]=="root")
 		<?php 
 		$query = " SELECT * FROM tb_view WHERE b_tbname = '$tbname' ORDER BY b_seq";
 		$result = $db->query($query);
-		$count = "select count(b_seq) from tb_view where b_tbname = '$tbname'";
+		$count = "select count(b_seq) as cnt from tb_view where b_tbname = '$tbname'";
 		$res = $db->query($count);
+		$row = $res->fetch_assoc();
+		$count = $row['cnt']; //전체 게시글의 수
 		?>
 		</p>
 		<form method="post" action="admin_field_process.php?mode=visiblechange&tbname=<?php echo $tbname?>">
@@ -260,9 +262,9 @@ if(!$_SESSION["session_id"]=="root")
 						<?php if( $row['b_seq'] == 1){ //순서가 첫번째일경우 ?>
 							위로 |
 							<a href ="#" Onclick="location.href='admin_field_process.php?mode=seqdown&seq=<?= $row['b_seq']?>&tbname=<?php echo $tbname?>'">아래로</a></td>
-							<!--  순서가 첫번째이면 순거변경 위로 비활성화 --> 
+							<!--  순서가 첫번째이면 순서변경 위로 비활성화 --> 
 							<?php }
-						else if( $row['b_seq'] == $res){ ?>
+						else if( $row['b_seq'] == $count){ ?><!--  순서가 마지막이면 순서변경 아래로 비활성화 --> 
 							<a href ="#" Onclick="location.href='admin_field_process.php?mode=sequp&seq=<?= $row['b_seq']?>&tbname=<?php echo $tbname?>'">위로</a> | 
 							아래로</td>
 						<?php }
@@ -275,7 +277,7 @@ if(!$_SESSION["session_id"]=="root")
 						$i++;
 						}?>
 					</table>
-					<input type="submit" value="저  장" >
+					<input type="submit" value="노출여부 저장" >
 		</form>
 		
   </body>
