@@ -57,9 +57,8 @@
 			$update_fdname = $_POST['update_field_name'];
 			
 			
-			$sql = "UPDATE  tb_view SET b_description = `$update` WHERE b_description = '$before' AND b_tbname = $tbname";
+			$sql = "UPDATE  tb_view SET b_description = '$update' WHERE b_description = '$before' AND b_tbname = '$tbname'";
 			$result = $db->query($sql);
-			echo $sql;
 			if ($result){
 				?>
 				<script>
@@ -123,7 +122,7 @@
 							<?php
 			}
 		}
-		if($mode == 'seqdown'){
+		if($mode == 'seqdown'){ //순서 변경중 내리기 작업
 			//b_seq는 admin process에서 넘겨주는 매개변수 b_seq 의 값이다.
 			$numplus = $seq+1; //b_seq는 admin process에서 넘겨주는 매개변수 b_seq 의 값이다.
 			$sql =  "UPDATE  tb_view SET b_seq= 0 WHERE b_tbname = '$tbname' AND b_seq = $numplus";

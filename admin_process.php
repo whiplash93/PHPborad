@@ -24,6 +24,17 @@ if(!$_SESSION["session_id"]=="root")
 		if($result){
 			$sql = "insert into tb_board (name, description) VALUES('$tableName','$description')";
 			$result = $db->query($sql);
+			
+			//tb_view에도 추가해줘야함.
+			$sql = "insert into tb_view (b_fname, b_tbname, b_visible, b_seq, b_description)
+					values ('b_no', '$tableName', 1, 1, '번호')
+					,('b_title', '$tableName', 1, 2, '제목')
+					,('b_id', '$tableName', 1, 3, '작성자')
+					,('b_hit', '$tableName', 1, 4, '조회수')
+					,('b_date', '$tableName', 1, 5, '작성일')";
+			$result = $db->query($sql);
+			
+			
 			echo "<script>alert('테이블을 생성하였습니다.');location.href='admin_index.php';</script>"; 
 			//테이블생성 성공
 		}
@@ -34,8 +45,16 @@ if(!$_SESSION["session_id"]=="root")
 	else if($mode=="delete"){
 		$sql = "DROP TABLE $tbname";
 		$result = $db->query($sql); //DB에서 테이블 삭제
+		
 		$sql = "delete from tb_board where name='$tbname'";
-		$result = $db->query($sql); //테이블에서 데이터 삭제
+		$result = $db->query($sql); //테이블관리 테이블에서 데이터 삭제
+		
+		$sql = "delete from tb_view where b_tbname='$tbname'";
+		$result = $db->query($sql); //tb_view 테이블에서 데이터 삭제
+		
+		$sql = "delete from tb_freecomment where b_name='$tbname'";
+		$result = $db->query($sql); //댓글관리 테이블에서 데이터 삭제
+		
 		echo "<script>alert('테이블을 삭제하였습니다.');location.href='admin_index.php';</script>"; 
 		//테이블삭제 성공
 	}
@@ -61,9 +80,12 @@ if(!$_SESSION["session_id"]=="root")
  <head>
   <title>관리자 페이지입니다.</title>
     <script>
-		function refresh_page(){
-			
-		}
+    function Update_desc()
+    {
+        var before_name = tb_view.before_field_name.value;
+        var update_name = tb_view.update_field_name.value;
+        location.href="admin_field_process.php?mode=fd_update&tbname=<?php echo $tbname?>&update="+update_name+"&before="+before_name;
+    }
     </script>
  </head>
  <body>
@@ -78,11 +100,12 @@ if(!$_SESSION["session_id"]=="root")
 		$count = $row['cnt'];
 		?>
 		</p>
-		<form method="post" action="admin_field_process.php?mode=visiblechange&tbname=<?php echo $tbname?>">
+		<form name="tb_view" method="post" action="admin_field_process.php?mode=visiblechange&tbname=<?php echo $tbname?>">
 		    <caption>실제 테이블 뷰 정보</caption>
 			<table border =1 >
 						<tr align="center">
 							<td>필드명</td>
+							<td>형식</td>
 							<td>노출여부</td>
 							<td>보여질 텍스트</td>
 							<td>순서변경</td>
@@ -95,6 +118,7 @@ if(!$_SESSION["session_id"]=="root")
 					{?>
 						<tr align="center" >
 							<td><?php echo $row['b_fname']?></td>
+							<td>업뎃예정</td>
 							<input type ="hidden" name="b_fname[<?php echo $i?>]" value="<?php echo $row['b_fname']?>">
 							<td>
 							<?php if ($row['b_visible'] == "1") { ?>
@@ -106,7 +130,7 @@ if(!$_SESSION["session_id"]=="root")
 													<input type="radio"  name="visible[<?= $i ?>]" checked="on" value="false">노출안함
 											 <?php }?>
 							</td>
-							<?php   //테이블 수정하기 상태에서 필드네임 매개변수로 넘어온게 지금 돌리고있는 쿼리의 Field명과 일치한다면
+							<?php   //테이블 수정하기 상태에서 필드네임 매개변수로 넘어온게 지금 돌리고있는 쿼리의 Field명과 일치한다면 /  즉 수정버튼을 눌렀을때를 말함.
 										if($mode=="update" && $desc ==  $row['b_description']){?>
 														<input type="hidden" name="before_field_name" class="textfield" id="field_0_3" type="text" value="<?=  $row['b_description']?>">
 												<td><input name="update_field_name" class="textfield" id="field_0_3" type="text" value="<?= $row['b_description']?>"></td>
@@ -132,7 +156,7 @@ if(!$_SESSION["session_id"]=="root")
 											<td><a href="#" Onclick="location.href='admin_process.php?mode=update&desc=<?php echo $row['b_description']?>&tbname=<?php echo $tbname?>'">수정</a></td>
 										<?php }
 										if($mode=="update" && $desc ==  $row['b_description']){?> <!-- 필드네임값이 있으면. 즉 컬럼 수정하기 버튼을 누른 후. -->
-											<td><input type="button" Onclick="admin_field_process.php?mode=fd_update&tbname=<?php echo $tbname?>&desc=<?= $row['b_description'];?>" value="수정"></td>
+											<td><input type="button" Onclick="Update_desc()"  value="수정"></td>
 										<?php }?>
 										<td><a href="#" Onclick="location.href='admin_process.php?mode=delete_field&desc=<?php echo $row['b_description']?>&tbname=<?php echo $tbname?>'" >삭제</a></td>
 									</tr>
@@ -141,11 +165,15 @@ if(!$_SESSION["session_id"]=="root")
 					<input type="submit" value="노출여부 저장" >
 		</form>
 		<br/>
+		
+		
+		
+		
 		컬럼을 추가합니다. <br>
 		<font color="red" size="2">*추가시 마지막 컬럼 다음으로 추가됩니다.</font>
-		<div style="width:300px; height:230px; background-color:#eee; border:1px solid">
+		<div style="width:400px; height:260px; background-color:#eee; border:1px solid">
 		  <form action="admin_field_process.php?mode=form&tbname=<?php echo $tbname?>" method="post">
-			<table border = 1>
+			<table border = 1 width = 400px;>
 				<tr>
 					<td>필드</td>
 					<td>
@@ -258,7 +286,72 @@ if(!$_SESSION["session_id"]=="root")
 		  </div>
 		  </form>
 		</div>
+		<br/>
 		
+		
+		<!-- 여기서부터~~~  -->
+		<form action="admin_field_process.php?mode=form&tbname=<?php echo $tbname?>" method="post">
+			<table border = 1 width = 400px; height= 400px>
+				<tr>
+					<td>컬럼네임</td>
+					<td>
+					<input name="field_name" title="필드" class="textfield" id="field_0_1" type="text" size="30" maxlength="64" value="<?php $field_name?>">
+					</td>
+				</tr>
+				<tr>
+					<td>형식</td>
+					<td>
+						<select name="field_type" id="field_0_2">
+							<option  selected="selected" value="TEXT">한줄 입력칸(text)</option>
+							<option value="URL">URL형식(url)</option>
+							<option value="EMAIL">이메일 형식(email)</option>
+							<option value="PHONE">전화번호 형식(phone)</option>
+								<option value="TEXTAREA">여러 줄 입력칸(textarea)</option>
+								<option value="PASSWORD">숨김입력칸(password)</option>
+								<option value="CHECKBOX">다중 선택(checkbox)	</option>
+								<option value="SELECT">단일 선택(select)	</option>
+								<option value="RADIO">라디오 버튼(radio)	</option>
+								<option value="ZIP">한국주소(zip)	</option>
+								<option value="DATE">일자(연월일)	</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td>길이/값</td>
+					<td>
+						<input name="field_length" class="textfield" id="field_0_3" type="text" size="30" value="<?php $field_length?>">
+					</td>
+				</tr>
+				<tr>
+					<td>기본값</td>
+					<td>
+						<input name="field_default_value" class="textfield" id="field_0_4" type="text" size="12" value="<?php $field_default_value?>">
+					</td>
+				
+				<tr>
+					<td>필수항목</td>
+					<td>
+						<input type="radio"  name="NULL" checked="on"  value="true">예
+						<input type="radio"  name="NULL" value="false">아니오
+					</td>
+				</tr>
+				<tr>
+					<td> 입력항목 이름</td>
+					<td>
+						<input name="field_desc" id="field_0_7" type="text">
+					</td>
+				</tr>
+				<tr>
+					<td>입력시 설명</td>
+					<td>
+						<input name="field_desc" id="field_0_7" type="text">
+					</td>
+				</tr>
+			</table>
+			<div style="width:50px; height:20px; margin:3px 0 0 100px; ">
+				<input name="do_save_data" type="submit" value="   저    장    " />
+		  </div>
+		  </form>
 		
   </body>
 </html>
