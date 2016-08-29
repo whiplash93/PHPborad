@@ -166,134 +166,12 @@ if(!$_SESSION["session_id"]=="root")
 		</form>
 		<br/>
 		
-		
-		
-		
-		컬럼을 추가합니다. <br>
-		<font color="red" size="2">*추가시 마지막 컬럼 다음으로 추가됩니다.</font>
 		<div style="width:400px; height:260px; background-color:#eee; border:1px solid">
-		  <form action="admin_field_process.php?mode=form&tbname=<?php echo $tbname?>" method="post">
-			<table border = 1 width = 400px;>
-				<tr>
-					<td>필드</td>
-					<td>
-					<input name="field_name" title="필드" class="textfield" id="field_0_1" type="text" size="30" maxlength="64" value="<?php $field_name?>">
-					</td>
-				</tr>
-				<tr>
-					<td>종류</td>
-					<td>
-						<select name="field_type" id="field_0_2">
-							<option  selected="selected" value="INT">INT</option>
-							<option value="VARCHAR">VARCHAR</option>
-							<option value="TEXT">TEXT</option>
-							<option value="DATE">DATE</option>
-							
-							<optgroup label="NUMERIC">
-								<option value="TINYINT">TINYINT</option>
-								<option value="SMALLINT">SMALLINT</option>
-								<option value="MEDIUMINT">MEDIUMINT</option>
-								<option value="INT">INT</option>
-								<option value="BIGINT">BIGINT</option>
-								<option value="-">-</option>
-								<option value="DECIMAL">DECIMAL</option>
-								<option value="FLOAT">FLOAT</option>
-								<option value="DOUBLE">DOUBLE</option>
-								<option value="REAL">REAL</option>
-								<option value="-">-</option>
-								<option value="BIT">BIT</option>
-								<option value="BOOL">BOOL</option>
-								<option value="SERIAL">SERIAL</option>
-							</optgroup>
-							
-							<optgroup label="DATE and TIME">
-								<option value="DATE">DATE</option>
-								<option value="DATETIME">DATETIME</option>
-								<option value="TIMESTAMP">TIMESTAMP</option>
-								<option value="TIME">TIME</option>
-								<option value="YEAR">YEAR</option>
-							</optgroup>
-							
-							<optgroup label="STRING">
-								<option value="CHAR">CHAR</option>
-								<option value="VARCHAR">VARCHAR</option>
-								<option value="-">-</option>
-								<option value="TINYTEXT">TINYTEXT</option>
-								<option value="TEXT">TEXT</option>
-								<option value="MEDIUMTEXT">MEDIUMTEXT</option>
-								<option value="LONGTEXT">LONGTEXT</option>
-								<option value="-">-</option>
-								<option value="BINARY">BINARY</option>
-								<option value="VARBINARY">VARBINARY</option>
-								<option value="-">-</option>
-								<option value="TINYBLOB">TINYBLOB</option>
-								<option value="MEDIUMBLOB">MEDIUMBLOB</option>
-								<option value="BLOB">BLOB</option>
-								<option value="LONGBLOB">LONGBLOB</option>
-								<option value="-">-</option>
-								<option value="ENUM">ENUM</option>
-								<option value="SET">SET</option>
-							</optgroup>
-							
-							<optgroup label="SPATIAL">
-								<option value="GEOMETRY">GEOMETRY</option>
-								<option value="POINT">POINT</option>
-								<option value="LINESTRING">LINESTRING</option>
-								<option value="POLYGON">POLYGON</option>
-								<option value="MULTIPOINT">MULTIPOINT</option>
-								<option value="MULTILINESTRING">MULTILINESTRING</option>
-								<option value="MULTIPOLYGON">MULTIPOLYGON</option>
-								<option value="GEOMETRYCOLLECTION">GEOMETRYCOLLECTION</option>
-							</optgroup>    
-						
-						</select>
-					</td>
-				</tr>
-				<tr>
-					<td>길이/값</td>
-					<td>
-						<input name="field_length" class="textfield" id="field_0_3" type="text" size="30" value="<?php $field_length?>">
-					</td>
-				</tr>
-				<tr>
-					<td>기본값</td>
-					<td>
-						<select name="field_default_type">
-							<option selected="selected" value="">None</option>
-							<option value="USER_DEFINED">As defined:</option>
-							<option value="NULL">NULL</option>
-							<option value="CURRENT_TIMESTAMP">CURRENT_TIMESTAMP</option>
-						</select>
-						<br/>
-						<input name="field_default_value" class="textfield" id="field_0_4" type="text" size="12" value="<?php $field_default_value?>">
-					</td>
-				
-				<tr>
-					<td>Null</td>
-					<td>
-						<input name="field_null" id="field_0_7" type="checkbox" value="NULL">
-					</td>
-				</tr>
-				<tr>
-					<td> 보여질 텍스트</td>
-					<td>
-						<input name="field_desc" id="field_0_7" type="text">
-					</td>
-				</tr>
-			</table>
-			<div style="width:50px; height:20px; margin:3px 0 0 100px; ">
-				<input name="do_save_data" type="submit" value="   저    장    " />
-		  </div>
-		  </form>
-		</div>
-		<br/>
-		
-		
 		<!-- 여기서부터~~~  -->
-		<form action="admin_field_process.php?mode=form&tbname=<?php echo $tbname?>" method="post">
-			<table border = 1 width = 400px; height= 400px>
+		<form action="admin_field_process.php?mode=add_column&tbname=<?php echo $tbname?>" method="post">
+			<table border = 1 width = 600px; height= 400px>
 				<tr>
-					<td>컬럼네임</td>
+					<td width="20%">컬럼네임</td>
 					<td>
 					<input name="field_name" title="필드" class="textfield" id="field_0_1" type="text" size="30" maxlength="64" value="<?php $field_name?>">
 					</td>
@@ -301,7 +179,7 @@ if(!$_SESSION["session_id"]=="root")
 				<tr>
 					<td>형식</td>
 					<td>
-						<select name="field_type" id="field_0_2">
+						<select name="b_type" id="field_0_2">
 							<option  selected="selected" value="TEXT">한줄 입력칸(text)</option>
 							<option value="URL">URL형식(url)</option>
 							<option value="EMAIL">이메일 형식(email)</option>
@@ -317,22 +195,17 @@ if(!$_SESSION["session_id"]=="root")
 					</td>
 				</tr>
 				<tr>
-					<td>길이/값</td>
-					<td>
-						<input name="field_length" class="textfield" id="field_0_3" type="text" size="30" value="<?php $field_length?>">
-					</td>
-				</tr>
-				<tr>
 					<td>기본값</td>
 					<td>
-						<input name="field_default_value" class="textfield" id="field_0_4" type="text" size="12" value="<?php $field_default_value?>">
+						<input name="field_default_value" class="textfield" id="field_0_4" type="text" size="20" value="<?php $field_default_value?>"><br>
+						<font size="3px">다중/단일 선택 등 기본 값이 여러 개가 필요한 경우 , (콤마)로 연결하면 됩니다.</font>
 					</td>
 				
 				<tr>
 					<td>필수항목</td>
 					<td>
-						<input type="radio"  name="NULL" checked="on"  value="true">예
-						<input type="radio"  name="NULL" value="false">아니오
+						<input type="radio"  name="field_null" checked="Null"  value="NOT NULL">예
+						<input type="radio"  name="field_null" value="NULL">아니오
 					</td>
 				</tr>
 				<tr>
@@ -344,7 +217,7 @@ if(!$_SESSION["session_id"]=="root")
 				<tr>
 					<td>입력시 설명</td>
 					<td>
-						<input name="field_desc" id="field_0_7" type="text">
+						<input name="field_destitle" id="field_0_7" type="text">
 					</td>
 				</tr>
 			</table>
@@ -352,6 +225,7 @@ if(!$_SESSION["session_id"]=="root")
 				<input name="do_save_data" type="submit" value="   저    장    " />
 		  </div>
 		  </form>
+		  </div>
 		
   </body>
 </html>
