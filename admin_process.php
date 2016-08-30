@@ -62,7 +62,7 @@ if(!$_SESSION["session_id"]=="root")
 	else if($mode=="delete_field"){
 		$sql = "alter table $tbname drop $fdname";
 		$result = $db->query($sql);
-		$sql = "DELETE FROM tb_view WHERE b_fname = '$fdname' AND b_tbname = '$tbname'";
+		$sql = "DELETE FROM tb_view WHERE b_fname = '$fname' AND b_tbname = '$tbname'";
 		$result = $db->query($sql);
 		if($result){
 			echo "<script>alert('컬럼을 삭제 하였습니다.');history.go(-1);</script>";
@@ -79,12 +79,39 @@ if(!$_SESSION["session_id"]=="root")
 <html>
  <head>
   <title>관리자 페이지입니다.</title>
-    <script>
+    <script language="javascript">
     function Update_desc()
     {
         var before_name = tb_view.before_field_name.value;
         var update_name = tb_view.update_field_name.value;
         location.href="admin_field_process.php?mode=fd_update&tbname=<?php echo $tbname?>&update="+update_name+"&before="+before_name;
+    }
+
+    function add_column_send()
+    {
+     		form = document.add_column_form;
+     		if (form.field_name.value == "")
+     		{
+      			alert("컬럼네임 입력 요망");
+      			form.field_name.focus();
+      			return false;
+     		}
+     		else if(form.field_desc.value == "")
+     		{
+      			alert("입력항목이름 입력 요망");
+   		    	form.field_desc.focus();
+   		    	return false;
+     		}
+     		else if(form.field_destitle.value == "")
+     		{
+      			alert("입력시 설명 입력 요망");
+   		    	form.field_destitle.focus();
+   		    	return false;
+     		}
+     		else
+     		{
+      			return true;
+     		}
     }
     </script>
  </head>
@@ -131,7 +158,7 @@ if(!$_SESSION["session_id"]=="root")
 											 <?php }?>
 							</td>
 							<?php   //테이블 수정하기 상태에서 필드네임 매개변수로 넘어온게 지금 돌리고있는 쿼리의 Field명과 일치한다면 /  즉 수정버튼을 눌렀을때를 말함.
-										if($mode=="update" && $desc ==  $row['b_description']){?>
+										if($mode=="update" && $desc ==  $row['b_description'] && $desc != '' ){?>
 														<input type="hidden" name="before_field_name" class="textfield" id="field_0_3" type="text" value="<?=  $row['b_description']?>">
 												<td><input name="update_field_name" class="textfield" id="field_0_3" type="text" value="<?= $row['b_description']?>"></td>
 						<?php     }else{?>
@@ -158,7 +185,7 @@ if(!$_SESSION["session_id"]=="root")
 										if($mode=="update" && $desc ==  $row['b_description']){?> <!-- 필드네임값이 있으면. 즉 컬럼 수정하기 버튼을 누른 후. -->
 											<td><input type="button" Onclick="Update_desc()"  value="수정"></td>
 										<?php }?>
-										<td><a href="#" Onclick="location.href='admin_process.php?mode=delete_field&desc=<?php echo $row['b_description']?>&tbname=<?php echo $tbname?>'" >삭제</a></td>
+										<td><a href="#" Onclick="location.href='admin_process.php?mode=delete_field&desc=<?php echo $row['b_description']?>&fname=<?php echo $row['b_fname']?>&tbname=<?php echo $tbname?>'" >삭제</a></td>
 									</tr>
 						 <?php }?>
 					</table>
@@ -166,9 +193,9 @@ if(!$_SESSION["session_id"]=="root")
 		</form>
 		<br/>
 		
-		<div style="width:400px; height:260px; background-color:#eee; border:1px solid">
+		<div style="width:600px; height:400px; background-color:#eee; border:1px solid">
 		<!-- 여기서부터~~~  -->
-		<form action="admin_field_process.php?mode=add_column&tbname=<?php echo $tbname?>" method="post">
+		<form name="add_column_form" action="admin_field_process.php?mode=add_column&tbname=<?php echo $tbname?>" method="post" onSubmit="return add_column_send();">
 			<table border = 1 width = 600px; height= 400px>
 				<tr>
 					<td width="20%">컬럼네임</td>

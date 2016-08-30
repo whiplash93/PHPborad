@@ -133,7 +133,7 @@
 				$row = $res->fetch_assoc();
 				$count = $row['cnt']+1;
 				$b_type .= ','.$field_default_value;
-				$sql = "INSERT INTO tb_view(b_fname, b_tbname, b_type, b_visible, b_seq, b_description, b_destitle) VALUES ('$field_name', '$tbname', $b_type 1, $count, '$field_desc','$field_destitle')";
+				$sql = "INSERT INTO tb_view(b_fname, b_tbname, b_type, b_visible, b_seq, b_description, b_destitle) VALUES ('$field_name', '$tbname', '$b_type', 1, $count, '$field_desc','$field_destitle')";
 				$result = $db->query($sql);
 				?>
 							<script>

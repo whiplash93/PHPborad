@@ -5,17 +5,38 @@
 	if(isset($_GET['bno'])) {
 		$bNo = $_GET['bno'];
 	}
-	// tb_freeboard // board_free
 	if(isset($bNo)) {
-		$sql = "select b_title, b_content, b_id, b_file from $tbname where b_no = $bNo";
+		$sql = "select * from $tbname where b_no = $bNo";
 		$result = $db->query($sql);
 		$row = $result->fetch_assoc();
-		
 	}
+	
 	$sql = "select * from tb_board where name = '$tbname'";
 	$result = $db->query($sql);
 	$tb_row = $result->fetch_assoc();
 	$tbdesc = $tb_row[description];
+	
+	$sql = "SELECT * FROM tb_view WHERE b_tbname ='$tbname' AND b_fname != b_no";
+	$result = $db->query($sql);
+
+	$check_array[0] = null;
+	$check_array_type[0] = null;
+	$check_array_desc[0] = null;
+	$check_array_destitle[0] = null;
+	while ($view_row = $result->fetch_assoc())
+	{
+		if($view_row['b_fname'] == 'b_id')
+		{
+			array_push($check_array,$view_row['b_fname']);
+		}
+		if($view_row['b_fname'] != 'b_id' && $view_row['b_fname'] != 'b_no' && $view_row['b_fname'] != 'b_date'  && $view_row['b_fname'] != 'b_title'  && $view_row['b_fname'] != 'b_hit')
+		{
+			array_push($check_array,$view_row['b_fname']);
+			array_push($check_array_type,$view_row['b_type']);
+			array_push($check_array_desc,$view_row['b_description']);
+			array_push($check_array_destitle,$view_row['b_destitle']);
+		}
+	}
 ?>
 <!DOCTYPE html>
 <html>
@@ -38,21 +59,32 @@
 				<table id="boardWrite">
 					<caption class="readHide"><?php echo $tbdesc?> 글쓰기</caption>
 					<tbody>
+		<?php 
+					
+					if(in_array('b_id', $check_array))
+					{?>
 						<tr>
 							<th scope="row"><label for="bID">아이디</label></th>
 							<td class="id">
 								<?php
-								if(isset($bNo)) {
+								if(isset($bNo)) //$bNo가 있다는건 수정버튼을 눌렀을때 라는것
+								{
 									echo $row['b_id'];
-								} else { ?>
+								}
+								else { ?>
 									<input type="text" name="bID" id="bID">
 								<?php } ?>
 							</td>
 						</tr>
+		<?php }?>
 						<tr>
 							<th scope="row"><label for="bPassword">비밀번호</label></th>
 							<td class="password"><input type="password" name="bPassword" id="bPassword"></td>
 						</tr>
+						<?php if($aa=true)
+// 						{
+						
+// 						}?>
 						<tr>
 							<th scope="row"><label for="bTitle">제목</label></th>
 							<td class="title"><input type="text" name="bTitle" id="bTitle" value="<?php echo isset($row['b_title'])?$row['b_title']:null?>"></td>
