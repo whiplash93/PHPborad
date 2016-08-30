@@ -16,27 +16,11 @@
 	$tb_row = $result->fetch_assoc();
 	$tbdesc = $tb_row[description];
 	
-	$sql = "SELECT * FROM tb_view WHERE b_tbname ='$tbname' AND b_fname != b_no";
+	$sql = "SELECT * FROM tb_view WHERE b_tbname = 'tb_test' AND b_fname != 'b_no' AND b_fname != 'b_hit' AND b_fname != 'b_date' AND b_fname != 'b_title'";
 	$result = $db->query($sql);
 
-	$check_array[0] = null;
-	$check_array_type[0] = null;
-	$check_array_desc[0] = null;
-	$check_array_destitle[0] = null;
-	while ($view_row = $result->fetch_assoc())
-	{
-		if($view_row['b_fname'] == 'b_id')
-		{
-			array_push($check_array,$view_row['b_fname']);
-		}
-		if($view_row['b_fname'] != 'b_id' && $view_row['b_fname'] != 'b_no' && $view_row['b_fname'] != 'b_date'  && $view_row['b_fname'] != 'b_title'  && $view_row['b_fname'] != 'b_hit')
-		{
-			array_push($check_array,$view_row['b_fname']);
-			array_push($check_array_type,$view_row['b_type']);
-			array_push($check_array_desc,$view_row['b_description']);
-			array_push($check_array_destitle,$view_row['b_destitle']);
-		}
-	}
+	
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -81,10 +65,36 @@
 							<th scope="row"><label for="bPassword">비밀번호</label></th>
 							<td class="password"><input type="password" name="bPassword" id="bPassword"></td>
 						</tr>
-						<?php if($aa=true)
-// 						{
-						
-// 						}?>
+						<?php while ($view_row = $result->fetch_assoc())
+	 							{$b_type = explode(",", $view_row['b_type']); 	 //count($b_type) 배열의 크기 구하기	
+	 							?>
+								<th 	scope="row"><?php echo $view_row['b_description']?></th> <!-- 새로 추가된 컬럼의 이름 -->
+								<? if($b_type[0] == 'TEXT')
+								{?>
+									<td class="title"><input type="text" name="<?= echo $view_row['b_fname']?>"></td>
+							<?}?>
+								<? if($b_type[0] == 'URL')
+								{?>
+									<td class="title"><input type="text" name="<?= echo $view_row['b_fname']?>"></td>
+							<?}?>
+								<? if($b_type[0] == 'EMAIL')
+								{?>
+									<td class="title"><input type="text" name="<?= echo $view_row['b_fname']?>"></td>
+							<?}?>
+								<? if($b_type[0] == 'PHONE')
+								{?>
+									<td><input type="text" maxlength="3" name="<?= echo $view_row['b_fname'].'1'?>">
+									<input type="text" maxlength="4" name="<?= echo $view_row['b_fname'].'2'?>">
+									<input type="text" maxlength="4" name="<?= echo $view_row['b_fname'].'3'?>">
+									</td>
+							<?}?>
+								<? if($b_type[0] == 'TEXTAREA')
+								{?>
+									<td class="title"><input type="textarea" name="<?= echo $view_row['b_fname']?>"></td>
+							<?}?>
+								</br>
+								<?= echo $view_row['b_destitle']?>
+	 			<?php }?>
 						<tr>
 							<th scope="row"><label for="bTitle">제목</label></th>
 							<td class="title"><input type="text" name="bTitle" id="bTitle" value="<?php echo isset($row['b_title'])?$row['b_title']:null?>"></td>
