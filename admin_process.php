@@ -211,8 +211,6 @@ if(!$_SESSION["session_id"]=="root")
 							<option value="URL">URL형식(url)</option>
 							<option value="EMAIL">이메일 형식(email)</option>
 							<option value="PHONE">전화번호 형식(phone)</option>
-								<option value="TEXTAREA">여러 줄 입력칸(textarea)</option>
-								<option value="PASSWORD">숨김입력칸(password)</option>
 								<option value="CHECKBOX">다중 선택(checkbox)	</option>
 								<option value="SELECT">단일 선택(select)	</option>
 								<option value="RADIO">라디오 버튼(radio)	</option>

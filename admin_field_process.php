@@ -107,7 +107,6 @@
 				case URL: $field_type='text'; break;
 				case EMAIL: $field_type='varchar(80)'; break;
 				case PHONE: $field_type='varchar(12)'; break;
-				case TEXTAREA: $field_type='text'; break;
 				case CHECKBOX: $field_type='varchar(50)'; break;
 				case SELECT: $field_type='varchar(50)'; break;
 				case RADIO: $field_type='varchar(50)'; break;

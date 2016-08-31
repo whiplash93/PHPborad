@@ -16,7 +16,7 @@
 	$tb_row = $result->fetch_assoc();
 	$tbdesc = $tb_row[description];
 	
-	$sql = "SELECT * FROM tb_view WHERE b_tbname = 'tb_test' AND b_fname != 'b_no' AND b_fname != 'b_hit' AND b_fname != 'b_date' AND b_fname != 'b_title'";
+	$sql = "SELECT * FROM tb_view WHERE b_tbname = '$tbname' AND b_fname != 'b_no' AND b_fname != 'b_hit' AND b_fname != 'b_date' AND b_fname != 'b_title'";
 	$result = $db->query($sql);
 
 	
@@ -43,10 +43,6 @@
 				<table id="boardWrite">
 					<caption class="readHide"><?php echo $tbdesc?> 글쓰기</caption>
 					<tbody>
-		<?php 
-					
-					if(in_array('b_id', $check_array))
-					{?>
 						<tr>
 							<th scope="row"><label for="bID">아이디</label></th>
 							<td class="id">
@@ -60,41 +56,82 @@
 								<?php } ?>
 							</td>
 						</tr>
-		<?php }?>
 						<tr>
 							<th scope="row"><label for="bPassword">비밀번호</label></th>
 							<td class="password"><input type="password" name="bPassword" id="bPassword"></td>
 						</tr>
 						<?php while ($view_row = $result->fetch_assoc())
-	 							{$b_type = explode(",", $view_row['b_type']); 	 //count($b_type) 배열의 크기 구하기	
-	 							?>
-								<th 	scope="row"><?php echo $view_row['b_description']?></th> <!-- 새로 추가된 컬럼의 이름 -->
-								<? if($b_type[0] == 'TEXT')
+	 							{$b_type = explode(",", $view_row['b_type']); 	 //콤마로 형식뒤에 있는 자료들을 잘라서 b_type변수에 배열로 저장한다. // count($b_type) 배열의 크기 구하기	
+	 							$cnt = count($b_type);
+								if($b_type[0] == 'TEXT')
 								{?>
-									<td class="title"><input type="text" name="<?= echo $view_row['b_fname']?>"></td>
+								<tr>
+									<th 	scope="row"><?php echo $view_row['b_description']?></th> <!-- 새로 추가된 컬럼의 이름 -->
+									<td class="title"><input type="text" name="<?=  $view_row['b_fname']?>">
 							<?}?>
 								<? if($b_type[0] == 'URL')
 								{?>
-									<td class="title"><input type="text" name="<?= echo $view_row['b_fname']?>"></td>
+								<tr>
+									<th 	scope="row"><?php echo $view_row['b_description']?></th> <!-- 새로 추가된 컬럼의 이름 -->
+									<td class="title"><input type="text" name="<?=  $view_row['b_fname']?>">
 							<?}?>
 								<? if($b_type[0] == 'EMAIL')
 								{?>
-									<td class="title"><input type="text" name="<?= echo $view_row['b_fname']?>"></td>
+								<tr>
+									<th 	scope="row"><?php echo $view_row['b_description']?></th> <!-- 새로 추가된 컬럼의 이름 -->
+									<td class="title"><input type="text" name="<?=  $view_row['b_fname']?>">
 							<?}?>
 								<? if($b_type[0] == 'PHONE')
 								{?>
-									<td><input type="text" maxlength="3" name="<?= echo $view_row['b_fname'].'1'?>">
-									<input type="text" maxlength="4" name="<?= echo $view_row['b_fname'].'2'?>">
-									<input type="text" maxlength="4" name="<?= echo $view_row['b_fname'].'3'?>">
-									</td>
+								<tr>
+									<th 	scope="row"><?php echo $view_row['b_description']?></th> <!-- 새로 추가된 컬럼의 이름 -->
+									<td><input type="text" maxlength="3" name="<?=  $view_row['b_fname'].'1'?>">
+									<input type="text" maxlength="4" name="<?=  $view_row['b_fname'].'2'?>">
+									<input type="text" maxlength="4" name="<?=  $view_row['b_fname'].'3'?>">
 							<?}?>
-								<? if($b_type[0] == 'TEXTAREA')
+								<? if($b_type[0] == 'CHECKBOX')
+										{?><tr><th scope="row"><?php echo $view_row['b_description']?></th><td class="title"> <!-- 새로 추가된 컬럼의 이름 --><?
+											for ($i=1;$i<$cnt;$i++)
+											{?>
+												
+												<input type="checkbox" name="<?=  $view_row['b_fname'].$i?>" value="<?=$b_type[$i]?>"><?=$b_type[$i]?>
+										<?}
+										}?>
+								<? if($b_type[0] == 'SELECT')
+										{?>
+										<tr>
+											<th 	scope="row"><?php echo $view_row['b_description']?></th> <!-- 새로 추가된 컬럼의 이름 -->
+											<td class="title"><select name ="<?= $view_row['b_fname']?>"><option value="<?=$view_row['b_description']?>"  selected="selected"><?=$view_row['b_description']?></option> <?
+											for ($i=1;$i<$cnt;$i++)
+											{?>
+												<option value="<?=$b_type[$i]?>"><?=$b_type[$i]?></option>
+										<?}
+										}?></select>
+								<? if($b_type[0] == 'RADIO')
+										{?><tr><th scope="row"><?php echo $view_row['b_description']?></th><td class="id"> <?
+											for ($i=1;$i<$cnt;$i++)
+											{?>
+												<!-- 새로 추가된 컬럼의 이름 -->
+												<input type="radio" name="<?=  $view_row['b_fname']?>" value="<?=$b_type[$i]?>"><?=$b_type[$i]?>
+										<?}
+										}?>
+								<? if($b_type[0] == 'ZIP')
 								{?>
-									<td class="title"><input type="textarea" name="<?= echo $view_row['b_fname']?>"></td>
+								<tr>
+									<th 	scope="row"><?php echo $view_row['b_description']?></th> <!-- 새로 추가된 컬럼의 이름 -->
+									<td><input type="text"  name="<?=  $view_row['b_fname'].'1'?>"></br>
+									<input type="text"  name="<?=  $view_row['b_fname'].'2'?>">
+							<?}?>
+								<? if($b_type[0] == 'DATE')
+								{?>
+								<tr>
+									<th 	scope="row"><?php echo $view_row['b_description']?></th> <!-- 새로 추가된 컬럼의 이름 -->
+									<td><input type="text"  name="<?=  $view_row['b_fname']?>">
 							<?}?>
 								</br>
-								<?= echo $view_row['b_destitle']?>
+								<?= $view_row['b_destitle']?></td>
 	 			<?php }?>
+	 					</tr>
 						<tr>
 							<th scope="row"><label for="bTitle">제목</label></th>
 							<td class="title"><input type="text" name="bTitle" id="bTitle" value="<?php echo isset($row['b_title'])?$row['b_title']:null?>"></td>
@@ -136,7 +173,7 @@
 					<button type="submit" class="btnSubmit btn">
 						<?php echo isset($bNo)?'수정':'작성'?>
 					</button>
-					<a href="./index.php" class="btnList btn">목록</a>
+					<a href="./index.php?tbname=<?=$tbname?>" class="btnList btn">목록</a>
 				</div>
 			</form>
 		</div>
