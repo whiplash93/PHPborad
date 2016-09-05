@@ -1,16 +1,6 @@
 <?php
 	require_once("dbconfig.php");
 	
-	
-	$sql = "SELECT * FROM tb_view WHERE b_tbname = '$tbname' AND b_fname != 'b_id' AND b_fname != 'b_no' AND b_fname != 'b_hit' AND b_fname != 'b_date' AND b_fname != 'b_title'";
-	$result = $db->query($sql);
-	while ($array_row = $result->fetch_assoc())
-	{
-		array_push($array_sql, $array_row['b_fname']); //b_aa, b_bb, b_cc, b_dd.....
-		$cnt = count($array_row); //배열의 크기 구하기
-		//$value = $_POST[$array_row[0]];
-	}
-	
 	//$_POST['bno']이 있을 때만 $bno 선언
 	if(isset($_POST['bno'])) {
 		$bNo = $_POST['bno'];
@@ -24,7 +14,7 @@
 	}
 	//항상 변수 선언
 	// 설정
-	$allowed_ext = array('jpg','jpeg','png','PNG','gif');
+	$allowed_ext = array('jpg','jpeg','png','PNG','gif','JPG','JPEG','GIT');
 	$bPassword = $_POST['bPassword'];
 	$bTitle = $_POST['bTitle'];
 	$bContent = $_POST['bContent'];
@@ -119,15 +109,22 @@ if(isset($bNo)) {
 
 //글 등록
 } else {
-	$sql = "insert into $tbname (b_no, b_title, b_content, b_date, b_hit, b_id, b_password, b_file, b_filedate";
-	for($i=1;$i<$cnt;$i++)
-	{
-		$sql.= ",$array_sql[$i]";
-		$sql .= "values(null, '$bTitle', '$bContent', '$date', 0, '$bID', password('$bPassword'), '$name', '$Filedate' )";
+	
+	$sql = "insert into $tbname (b_no, b_title, b_content, b_date, b_hit, b_id, b_password, b_file, b_filedate) values(null, '$bTitle', '$bContent', '$date', 0, '$bID', password('$bPassword'), '$name', '$Filedate' )";
 		$msgState = '등록';
 	}
+	$result = $db->query($sql);
 	
-}
+	$sql = "SELECT * FROM tb_view WHERE b_tbname = '$tbname' AND b_fname != 'b_id' AND b_fname != 'b_no' AND b_fname != 'b_hit' AND b_fname != 'b_date' AND b_fname != 'b_title'";
+	$result = $db->query($sql);
+	while ($array_row = $result->fetch_assoc())
+	{
+		while(isset($_POST["$".$array_row['b_fname']]))
+		$value = $_POST["$".$array_row['b_fname']];
+		$sql = "INSERT INTO $tbname ('$array_row['b_fname']') values('')";
+// 		$array_row['b_fname']; //b_aa, b_bb, b_cc, b_dd.....
+		$cnt = count($array_row); //배열의 크기 구하기
+	}
 
 //메시지가 없다면 (오류가 없다면)
 if(empty($msg)) {

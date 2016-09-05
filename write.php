@@ -61,11 +61,12 @@
 							<td class="password"><input type="password" name="bPassword" id="bPassword"></td>
 						</tr>
 						<?php while ($view_row = $result->fetch_assoc())
-	 							{$b_type = explode(",", $view_row['b_type']); 	 //콤마로 형식뒤에 있는 자료들을 잘라서 b_type변수에 배열로 저장한다. // count($b_type) 배열의 크기 구하기	
+	 							{$b_type = explode(",", $view_row['b_type']); 	 //콤마로 형식뒤에 있는 자료들을 잘라서 b_type변수에 [배열]로 저장한다. // count($b_type) 배열의 크기 구하기	
 	 							$cnt = count($b_type);
 								if($b_type[0] == 'TEXT')
 								{?>
 								<tr>
+									<input type= "hidden" name= "b_fname" value="TEXT">
 									<th 	scope="row"><?php echo $view_row['b_description']?></th> <!-- 새로 추가된 컬럼의 이름 -->
 									<td class="title"><input type="text" name="<?=  $view_row['b_fname']?>">
 							<?}?>
