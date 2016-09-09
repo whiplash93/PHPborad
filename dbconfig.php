@@ -1,6 +1,5 @@
 <?php
 header('Content-Type: text/html; charset=utf-8');
-$tbname = $_GET['tbname'];
 $db = new mysqli('localhost', 'root', 'apmsetup', 'mydb');
 $sql = " select * from tb_board where name = '$tbname' ";
 

@@ -67,26 +67,67 @@
 								{?>
 								<tr>
 									<input type= "hidden" name= "b_fname" value="TEXT">
-									<th 	scope="row"><?php echo $view_row['b_description']?></th> 
+									<th 	scope="row"><?php echo $view_row['b_description']?></th> <!-- 새로 추가된 컬럼의 이름 -->
 									<td class="title"><input type="text" name="<?=  $view_row['b_fname']?>">
-							<?}?>
-								<? if($b_type[0] == 'TEXTAREA')
-								{?>
-								<tr>
-									<th 	scope="row"><?php echo $view_row['b_description']?></th> 
-									<td class="title"><input type="textarea" name="<?=  $view_row['b_fname']?>">
-							<?}?>
-								<? if($b_type[0] == 'IMG')
-								{?>
-								<tr>
-									<th 	scope="row"><?php echo $view_row['b_description']?></th>
-									<td class="title"><input type="file" name="<?=  $view_row['b_fname']?>">
 							<?}?>
 								<? if($b_type[0] == 'URL')
 								{?>
 								<tr>
-									<th 	scope="row"><?php echo $view_row['b_description']?></th>
+									<th 	scope="row"><?php echo $view_row['b_description']?></th> <!-- 새로 추가된 컬럼의 이름 -->
 									<td class="title"><input type="text" name="<?=  $view_row['b_fname']?>">
+							<?}?>
+								<? if($b_type[0] == 'EMAIL')
+								{?>
+								<tr>
+									<th 	scope="row"><?php echo $view_row['b_description']?></th> <!-- 새로 추가된 컬럼의 이름 -->
+									<td class="title"><input type="text" name="<?=  $view_row['b_fname']?>">
+							<?}?>
+								<? if($b_type[0] == 'PHONE')
+								{?>
+								<tr>
+									<th 	scope="row"><?php echo $view_row['b_description']?></th> <!-- 새로 추가된 컬럼의 이름 -->
+									<td><input type="text" maxlength="3" name="<?=  $view_row['b_fname'].'1'?>">
+									<input type="text" maxlength="4" name="<?=  $view_row['b_fname'].'2'?>">
+									<input type="text" maxlength="4" name="<?=  $view_row['b_fname'].'3'?>">
+							<?}?>
+								<? if($b_type[0] == 'CHECKBOX')
+										{?><tr><th scope="row"><?php echo $view_row['b_description']?></th><td class="title"> <!-- 새로 추가된 컬럼의 이름 --><?
+											for ($i=1;$i<$cnt;$i++)
+											{?>
+												
+												<input type="checkbox" name="<?=  $view_row['b_fname'].$i?>" value="<?=$b_type[$i]?>"><?=$b_type[$i]?>
+										<?}
+										}?>
+								<? if($b_type[0] == 'SELECT')
+										{?>
+										<tr>
+											<th 	scope="row"><?php echo $view_row['b_description']?></th> <!-- 새로 추가된 컬럼의 이름 -->
+											<td class="title"><select name ="<?= $view_row['b_fname']?>"><option value="<?=$view_row['b_description']?>"  selected="selected"><?=$view_row['b_description']?></option> <?
+											for ($i=1;$i<$cnt;$i++)
+											{?>
+												<option value="<?=$b_type[$i]?>"><?=$b_type[$i]?></option>
+										<?}
+										}?></select>
+								<? if($b_type[0] == 'RADIO')
+										{?><tr><th scope="row"><?php echo $view_row['b_description']?></th><td class="id"> <?
+											for ($i=1;$i<$cnt;$i++)
+											{?>
+												<!-- 새로 추가된 컬럼의 이름 -->
+												<input type="radio" name="<?=  $view_row['b_fname']?>" value="<?=$b_type[$i]?>"><?=$b_type[$i]?>
+										<?}
+										}?>
+								<? if($b_type[0] == 'ZIP')
+								{?>
+								<tr>
+									<th 	scope="row"><?php echo $view_row['b_description']?></th> <!-- 새로 추가된 컬럼의 이름 -->
+									<td><input type="text"  name="<?=  $view_row['b_fname'].'1'?>"></br>
+									<input type="text"  name="<?=  $view_row['b_fname'].'2'?>">
+							<?}?>
+								<? if($b_type[0] == 'DATE')
+								{?>
+								<tr>
+									<th 	scope="row"><?php echo $view_row['b_description']?></th> <!-- 새로 추가된 컬럼의 이름 -->
+									<td><input type="text"  name="<?=  $view_row['b_fname']?>">
 							<?}?>
 								</br>
 								<?= $view_row['b_destitle']?></td>

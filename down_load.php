@@ -8,8 +8,8 @@ $row = $result->fetch_assoc();
 $b_filedate = $row['b_filedate'];
 
 $dir = "./upload/";
-// $filename = iconv("UTF-8","CP949", $row['b_file']);
-// $filedate = iconv("UTF-8","CP949", $row['b_filedate']);
+$filename = iconv("UTF-8","CP949", $row['b_file']);
+$filedate = iconv("UTF-8","CP949", $row['b_filedate']);
 if(file_exists($dir.$filedate))
 { 
 	header("Content-Type: Application/octet-stream");
