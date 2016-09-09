@@ -114,26 +114,40 @@ if(isset($bNo)) {
 		$msgState = '등록';
 	}
 	$result = $db->query($sql);
-	
-	$sql = "SELECT * FROM tb_view WHERE b_tbname = '$tbname' AND b_fname != 'b_id' AND b_fname != 'b_no' AND b_fname != 'b_hit' AND b_fname != 'b_date' AND b_fname != 'b_title'";
-	$result = $db->query($sql);
-	while ($array_row = $result->fetch_assoc())
-	{
-		while(isset($_POST["$".$array_row['b_fname']]))
-		$value = $_POST["$".$array_row['b_fname']];
-		$sql = "INSERT INTO $tbname ('$array_row['b_fname']') values('')";
-// 		$array_row['b_fname']; //b_aa, b_bb, b_cc, b_dd.....
-		$cnt = count($array_row); //배열의 크기 구하기
-	}
 
 //메시지가 없다면 (오류가 없다면)
 if(empty($msg)) {
-	$result = $db->query($sql);
+// 	$result = $db->query($sql);
 	//쿼리가 정상 실행 됐다면,
 	if($result) {
 		$msg = '정상적으로 글이 ' . $msgState . '되었습니다.';
 		if(empty($bNo)) {
 			$bNo = $db->insert_id;
+			
+			$sql = "SELECT * FROM tb_view WHERE b_tbname = '$tbname' AND b_fname != 'b_id' AND b_fname != 'b_no' AND b_fname != 'b_hit' AND b_fname != 'b_date' AND b_fname != 'b_title'";
+			$result = $db->query($sql);
+			while ($array_row = $result->fetch_assoc())
+			{
+				if(isset($_POST[$array_row['b_fname']]))
+				{
+					$value = $_POST[$array_row['b_fname']];
+				}	
+				for($i=1;$i<20;$i++)
+				{
+					if(isset($_POST[$array_row['b_fname'].$i]))
+					{
+						$values[$i] = $_POST[$array_row['b_fname'].$i];
+						$value==''? $value .= $values[$i] : $value .= ','.$values[$i];
+						echo $value;
+					}
+				}
+				$fname = $array_row['b_fname']; //b_aa, b_bb, b_cc, b_dd.....
+				$sql = "UPDATE $tbname SET $fname = '$value' WHERE b_no = $bNo";
+				$res_up = $db->query($sql);
+				echo $sql;
+				$value = '';
+			}
+		
 		}
 		$replaceURL = './view.php?tbname='."$tbname".'&bno=' . $bNo;
 	} else {
