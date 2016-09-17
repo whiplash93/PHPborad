@@ -1,5 +1,6 @@
 <?php
 	require_once("dbconfig.php");
+	session_start();
 	//관리자 세션 없으면 못들어옴.
 	if(!$_SESSION["session_id"]=="root")
 	{

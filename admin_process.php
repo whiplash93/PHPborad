@@ -1,5 +1,6 @@
 <?php
 require_once("dbconfig.php");
+session_start();
 //admin_index.php 의 기능부분.
 //모드 매개변수에 따라서 작동함	
 if(!$_SESSION["session_id"]=="root")
