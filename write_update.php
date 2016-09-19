@@ -1,5 +1,6 @@
 <?php
 	require_once("dbconfig.php");
+	require_once("img_view.php");
 	
 	//$_POST['bno']이 있을 때만 $bno 선언
 	if(isset($_POST['bno'])) {
@@ -24,7 +25,8 @@
 	$ext = array_pop(explode('.', $name));
 	$File = iconv("UTF-8","EUC-KR",$_FILES['File']['name']);	// 기존첨부파일명
 	if($File){ //파일 첨부가 되있다면
-		$Filedate = $tbname.'_'.$time[1].substr($time[0],2,6);	// 새로운첨부파일명  테이블명_마이크로타임
+//		$Filedate = $tbname.'_'.$time[1].substr($time[0],2,6);	// 새로운첨부파일명  테이블명_마이크로타임
+		$Filedate = $tbname.'_'.$_FILES['File']['name'];
 	}
 	
 	
@@ -70,11 +72,13 @@ if( $error != 4){
 	}
 }	
 	# 파일 업로드
+	echo "파일함수 출력 :::".$_FILES['File']['name'];
 	$uploaddir = 'upload/';
 	$uploadfile = $uploaddir.basename($_FILES['File']['name']);
 	if(move_uploaded_file($_FILES['File']['tmp_name'], 'upload/'.$Filedate));{
-		// echo "파일이 유효하고, 성공적으로 업로드 되었습니다.";
+		echo "파일이 유효하고, 성공적으로 업로드 되었습니다.";
 	}
+	make_thumbnail("./upload/".$Filedate, 200, 200, "./upload/thum_".$Filedate);
 	
 //글 수정
 if(isset($bNo)) {
@@ -114,21 +118,26 @@ if(isset($bNo)) {
 		$msgState = '등록';
 	}
 	$result = $db->query($sql);
-	
-	$sql = "SELECT * FROM tb_view WHERE b_tbname = '$tbname' AND b_fname != 'b_id' AND b_fname != 'b_no' AND b_fname != 'b_hit' AND b_fname != 'b_date' AND b_fname != 'b_title'";
+	$bNo = $db->insert_id;
+	$sql = "SELECT * FROM tb_view WHERE b_tbname = '$tbname' AND b_fname != 'b_id' AND b_fname != 'b_no' AND b_fname != 'b_hit' 
+	AND b_fname != 'b_date' AND b_fname != 'b_title' AND b_fname != 'b_file' AND b_fname != 'b_content' 'b_id' 
+	AND b_fname != 'b_no' AND b_fname != 'b_hit' AND b_fname != 'b_date' AND b_fname != 'b_title' AND b_fname != 'b_file' 
+	AND b_fname != 'b_content' AND b_fname != 'b_filedate' AND b_fname != 'b_password' ";
 	$result = $db->query($sql);
-	while ($array_row = $result->fetch_assoc())
+	echo "여기까지 실행돠ㅣㅁ";
+	while ($array_row = $result->fetch_assoc())//추가된 컬럼 하나씩 쿼리돌려서 그안에 값넣음.
 	{
-		while(isset($_POST["$".$array_row['b_fname']]))
-		$value = $_POST["$".$array_row['b_fname']];
-		$sql = "INSERT INTO $tbname ('$array_row['b_fname']') values('')";
-// 		$array_row['b_fname']; //b_aa, b_bb, b_cc, b_dd.....
-		$cnt = count($array_row); //배열의 크기 구하기
+		$value = $_POST[$array_row['b_fname']];
+		echo "value출력  : ". $value;
+		$fname = $array_row['b_fname']; //b_aa, b_bb, b_cc, b_dd.....
+		$sql = "UPDATE $tbname SET $fname = '$value' WHERE b_no = $bNo";
+		$res_up = $db->query($sql);
+		echo "sql 출력 :".$sql;
 	}
 
 //메시지가 없다면 (오류가 없다면)
 if(empty($msg)) {
-	$result = $db->query($sql);
+// 	$result = $db->query($sql);
 	//쿼리가 정상 실행 됐다면,
 	if($result) {
 		$msg = '정상적으로 글이 ' . $msgState . '되었습니다.';

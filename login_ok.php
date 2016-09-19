@@ -7,7 +7,8 @@ require_once("dbconfig.php");
  $query = " select * from tb_admin ";
  $result = $db->query($query);
  $result = $result->fetch_assoc();
-
+$id = $_POST['id'];
+$pw = $_POST['pw'];
  $sql = 'select count(admin_pwd) as cnt from tb_admin where admin_pwd=password("' . $pw . '")';
  $result2 = $db->query($sql);
  $row = $result2->fetch_assoc();

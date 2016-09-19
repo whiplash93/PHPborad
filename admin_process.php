@@ -1,5 +1,6 @@
 <?php
 require_once("dbconfig.php");
+
 //admin_index.php 의 기능부분.
 //모드 매개변수에 따라서 작동함	
 if(!$_SESSION["session_id"]=="root")
@@ -58,9 +59,25 @@ if(!$_SESSION["session_id"]=="root")
 		echo "<script>alert('테이블을 삭제하였습니다.');location.href='admin_index.php';</script>"; 
 		//테이블삭제 성공
 	}
-	//필드 삭제
+	//컬럼 삭제
 	else if($mode=="delete_field"){
-		$sql = "alter table $tbname drop $fdname";
+		$sql = "SELECT b_seq FROM tb_view WHERE b_fname = '$fname'";
+		echo $sql;
+		$result = $db->query($sql);
+		$seq = $result->fetch_assoc();
+		$seq = $seq['b_seq'];
+		
+		$cnt = "select count(b_seq) as cnt from tb_view where b_tbname = '$tbname'";
+		$res = $db->query($cnt);
+		$row = $res->fetch_assoc();
+		$cnt = $row['cnt'];
+		for($i=$seq+1;$i==$cnt;$i++)
+		{
+			$sql =  "UPDATE tb_view SET b_seq = $i-1  WHERE b_tbname = '$tbname' AND b_seq = $i";
+			$result = $db->query($sql);
+		}
+		
+		$sql = "alter table $tbname drop $fname";
 		$result = $db->query($sql);
 		$sql = "DELETE FROM tb_view WHERE b_fname = '$fname' AND b_tbname = '$tbname'";
 		$result = $db->query($sql);
@@ -134,7 +151,8 @@ if(!$_SESSION["session_id"]=="root")
 							<td>필드명</td>
 							<td>형식</td>
 							<td>노출여부</td>
-							<td>보여질 텍스트</td>
+							<td>제목</td>
+							<td>입력시 설명</td>
 							<td>순서변경</td>
 							<td colspan=2>명령</td>
 						</tr>
@@ -145,7 +163,13 @@ if(!$_SESSION["session_id"]=="root")
 					{?>
 						<tr align="center" >
 							<td><?php echo $row['b_fname']?></td>
-							<td>업뎃예정</td>
+							<td>
+							<?php 
+								$b_type = explode(",", $row['b_type']); 	 //콤마로 형식뒤에 있는 자료들을 잘라서 b_type변수에 [배열]로 저장한다. //
+								$b_type[0] == '' ? $type= TEXT :  $type = $b_type[0];
+								echo $type;
+							?>
+							</td>
 							<input type ="hidden" name="b_fname[<?php echo $i?>]" value="<?php echo $row['b_fname']?>">
 							<td>
 							<?php if ($row['b_visible'] == "1") { ?>
@@ -164,6 +188,29 @@ if(!$_SESSION["session_id"]=="root")
 						<?php     }else{?>
 												<td><?php echo $row['b_description'];?></td> 
 							<?php } ?>
+							<td>
+							<?php 
+							$row['b_destitle'] =='' ? $title = "　" : $title = $row['b_destitle'];
+							echo $title;
+							?>
+							</td>
+							<td>
+							<?php 
+							if(isset($b_type[1]))
+							{
+								echo $b_type[1];
+							}
+							else
+								echo "　";
+							for($j=2;$j<20;$j++)
+							{
+								if(isset($b_type[$j]))
+								{
+									echo ','.$b_type[$j];
+								}
+							}
+							?>
+							</td>
 						<td> 
 						<?php if( $row['b_seq'] == 1){ //순서가 첫번째일경우 ?>
 							위로 |
@@ -208,24 +255,12 @@ if(!$_SESSION["session_id"]=="root")
 					<td>
 						<select name="b_type" id="field_0_2">
 							<option  selected="selected" value="TEXT">한줄 입력칸(text)</option>
+							<option value="TEXTAREA">여러줄 입력칸(textarea)</option>
+							<option value="IMG">이미지(img)</option>
 							<option value="URL">URL형식(url)</option>
-							<option value="EMAIL">이메일 형식(email)</option>
-							<option value="PHONE">전화번호 형식(phone)</option>
-								<option value="CHECKBOX">다중 선택(checkbox)	</option>
-								<option value="SELECT">단일 선택(select)	</option>
-								<option value="RADIO">라디오 버튼(radio)	</option>
-								<option value="ZIP">한국주소(zip)	</option>
-								<option value="DATE">일자(연월일)	</option>
 						</select>
 					</td>
 				</tr>
-				<tr>
-					<td>기본값</td>
-					<td>
-						<input name="field_default_value" class="textfield" id="field_0_4" type="text" size="20" value="<?php $field_default_value?>"><br>
-						<font size="3px">다중/단일 선택 등 기본 값이 여러 개가 필요한 경우 , (콤마)로 연결하면 됩니다.</font>
-					</td>
-				
 				<tr>
 					<td>필수항목</td>
 					<td>

@@ -1,12 +1,13 @@
 <?php
-	require_once("dbconfig.php");
-	$bNo = $_GET['bno'];
-	$tbname = $_GET['tbname'];
-	if(!empty($bNo) && empty($_COOKIE[$tbname.'_' . $bNo])) {
-		$sql = "update ".$tbname." set b_hit = b_hit + 1 where b_no = ".$bNo;
-		$result = $db->query($sql);
-		if(empty($result)) {
-			?>
+require_once("dbconfig.php");
+
+$bNo = $_GET['bno'];
+$tbname = $_REQUEST['tbname'];
+if(!empty($bNo) && empty($_COOKIE[$tbname.'_' . $bNo])) {
+	$sql = "update ".$tbname." set b_hit = b_hit + 1 where b_no = ".$bNo;
+	$result = $db->query($sql);
+	if(empty($result)) {
+		?>
 			<script>
 				alert('오류가 발생했습니다.');
 				history.back();
@@ -17,15 +18,135 @@
 		}
 	}
 	
-	$sql = "select b_title, b_content, b_date, b_hit, b_id, b_file, b_filedate from "."$tbname"." where b_no = ".$bNo;
-	$result = $db->query($sql);
-	$row = $result->fetch_assoc();
-	$filename = $row['b_file'];
-	$filedate = $row['b_filedate'];
+// 	$sql = "select b_title, b_content, b_date, b_hit, b_id, b_file, b_filedate from "."$tbname"." where b_no = ".$bNo;
+// 	$result = $db->query($sql);
+// 	$row = $result->fetch_assoc();
+// 	$filename = $row['b_file'];
+// 	$filedate = $row['b_filedate'];
+	
 	$sql = " select * from tb_board where name = '$tbname'";
 	$result = $db->query($sql);
 	$tbdesc = $result->fetch_assoc();
 	$tbdesc = $tbdesc['description'];
+	//게시판 이름과 설명을 가져오기위한 쿼리
+	
+	$sql  = " select * from tb_view where b_tbname = '$tbname' AND b_visible = '1' order by b_seq";
+	$result_row = $db->query($sql);
+	//
+	$a = 0;
+	while($table_row = $result_row->fetch_assoc())
+	{
+		$table_column[$a] = $table_row['b_fname'];
+		$table_dsc[$a] = $table_row['b_description'];
+		$table_type[$a] = $table_row['b_type'];
+		
+		$a++;
+	}
+	$cnt = count($table_column);
+	$content = $table_column[0];
+	
+	for($i=1;$i<$cnt;$i++)
+	{
+		$content .= ','.$table_column[$i];
+	}
+	$sql = "select $content ". " from "." $tbname ". "where b_no = ".$bNo;
+	$result = $db->query($sql);
+	$table_row = $result->fetch_assoc();
+	
+	//파일 데이터 읽어오는 쿼리 b_file은 업로드할때 선택한 실제 파일명이고 b_filedate는 마이크타임으로 새로지은 파일이름이다.
+	$query = "select b_file, b_filedate from $tbname where b_no=".$bNo;
+	$res = $db->query($query);
+	$img_row = $res->fetch_assoc();
+	//썸네일된 이미지의 이름 
+	$img_name  = "thum_".$tbname."_".$img_row['b_file'];
+	
+	
+	//이미지썸네일 함수
+	function make_thumbnail($source_path, $width, $height, $thumbnail_path){
+		list($img_width,$img_height, $type) = getimagesize($source_path);
+		if ($type!=1 && $type!=2 && $type!=3 && $type!=15) return;
+		if ($type==1) $img_sour = imagecreatefromgif($source_path);
+		else if ($type==2 ) $img_sour = imagecreatefromjpeg($source_path);
+		else if ($type==3 ) $img_sour = imagecreatefrompng($source_path);
+		else if ($type==15) $img_sour = imagecreatefromwbmp($source_path);
+		if ($img_width > $img_height) {
+			$w = round($height*$img_width/$img_height);
+			$h = $height;
+			$x_last = round(($w-$width)/2);
+			$y_last = 0;
+		} else {
+			$w = $width;
+			$h = round($width*$img_height/$img_width);
+			$x_last = 0;
+			$y_last = round(($h-$height)/2);
+		}
+		if ($img_width < $width && $img_height < $height) {
+			$img_last = imagecreatetruecolor($width, $height);
+			$x_last = round(($width - $img_width)/2);
+			$y_last = round(($height - $img_height)/2);
+	
+			imagecopy($img_last,$img_sour,$x_last,$y_last,0,0,$w,$h);
+			imagedestroy($img_sour);
+			$white = imagecolorallocate($img_last,255,255,255);
+			imagefill($img_last, 0, 0, $white);
+		} else {
+			$img_dest = imagecreatetruecolor($w,$h);
+			imagecopyresampled($img_dest, $img_sour,0,0,0,0,$w,$h,$img_width,$img_height);
+			$img_last = imagecreatetruecolor($width,$height);
+			imagecopy($img_last,$img_dest,0,0,$x_last,$y_last,$w,$h);
+			imagedestroy($img_dest);
+		}
+		if ($thumbnail_path) {
+			if ($type==1) imagegif($img_last, $thumbnail_path, 100);
+			else if ($type==2 ) imagejpeg($img_last, $thumbnail_path, 100);
+			else if ($type==3 ) imagepng($img_last, $thumbnail_path, 100);
+			else if ($type==15) imagebmp($img_last, $thumbnail_path, 100);
+		} else {
+			if ($type==1) imagegif($img_last);
+			else if ($type==2 ) imagejpeg($img_last);
+			else if ($type==3 ) imagepng($img_last);
+			else if ($type==15) imagebmp($img_last);
+		}
+		imagedestroy($img_last);
+	}
+	
+	function img_view($image){
+		//전송된 이미지 여부 확인
+		if( isset($image) ) {
+			//이미지 파일명
+			$image_name = $image;
+		
+			//이미지 전체경로를 포함한 이미지명
+			$image_path = $_SERVER['DOCUMENT_ROOT'].'/test/upload/'.$image;
+			//넘어온 이미지경로의 존재여부와 파일여부 확인
+			echo "이미지경로:::".$image_path; 
+			if(file_exists($image_path) && is_file($image_path)) {
+			echo "파일존재 여부 확인했음";
+				//넘어온 파일 확장자 추출
+				$tmp_name = pathinfo($image_path);
+				$ext = strtolower($tmp_name['extension']);
+		
+				//지정된 확장자만 보여주도록 필터링
+				if($ext == 'jpg' || $ext='gif' || $ext='png' || $ext='bmp') {
+					echo "필터링 if문 통과";
+					//이미지 크기정보와 사이즈를 얻어옴
+					$img_info = getimagesize($image_path);
+					$filesize = filesize($image_path);
+		
+					//이미지 전송을 위한 헤더설정
+					header("Content-Type: {$img_info['mime']}\n");
+					header("Content-Disposition: inline;filename='$image_name'\n");
+					header("Content-Length: $filesize\n");
+						
+					//이미지 내용을 읽어들임
+					readfile($image_path);
+				}//if
+			}//if
+		}//if
+	}//function
+	
+	
+	$src = $_SERVER['DOCUMENT_ROOT'].'/test/upload/'.$img_name;
 ?>
 <!DOCTYPE html>
 <html>
@@ -36,35 +157,30 @@
 	<link rel="stylesheet" href="./css/board.css" />
 	<script src="./js/jquery-2.1.3.min.js"></script>
 	<script>
-	function back(){
-		history.back();
-	}
 	</script>
 </head>
 <body>
-	<article class="boardArticle">
-		<h3><?php echo $tbdesc?></h3>
-		<div id="boardView">
-			<h3 id="boardTitle"><?php echo $row['b_title']?></h3>
-			<div id="boardInfo">
-				<span id="boardID">작성자: <?php echo $row['b_id']?></span>
-				<span id="boardDate">작성일: <?php echo $row['b_date']?></span>
-				<span id="boardHit">조회: <?php echo $row['b_hit']?></span>
-			</div>
-			<div id="boardContent"><?php echo $row['b_content']?></div>
-			<div id="boardFile">첨부된 파일 :
-			<a href="down_Load.php?tbname=<?php echo $tbname?>&fileName=<?php echo $filedate?>&num=<?php echo $bNo ?>"><?php echo $filename ?>
-				<?php 
-// 				if($filename != null)
-// 					echo $filename;
-// 	 	 		    else echo "</a> 첨부된 파일 없음";
-				?></a>
-			</div>
-			<div class="btnSet">
+<article class="boardArticle">
+	<table border='1' width='700px'>
+	<?php for($i=0;$i<$cnt;$i++)
+	{?>
+	<tr>
+		<th><?=  $table_dsc[$i]?> </th>
+		<?php if ($table_type[$i]=="IMG") {?>
+				<?php // echo "dddddddd"; img_view($img_name)?>
+				<th><img alt="" src="<?php echo $src?>"></th>
+		<?php }else if ($table_type[$i]=="URL") {?>
+		<th><a href="<?= $table_row[$table_column[$i]] ?>"></a> </th>
+		<?php }else {?>
+		<th><?= $table_row[$table_column[$i]] ?> </th>
+		<?php }?>
+	</tr>
+	<?php 
+	}?>
+	</table>
 				<a href="./write.php?tbname=<?php echo $tbname?>&bno=<?php echo $bNo?>">수정</a>
 				<a href="./delete.php?tbname=<?php echo $tbname?>&bno=<?php echo $bNo?>&filedate=<?php echo $filedate?>">삭제</a>
 				<a href="./index.php?tbname=<?php echo $tbname?>">목록</a>
-			</div>
 		<div id="boardComment">
 			<?php require_once("./comment.php")?>
 		</div>

@@ -96,29 +96,29 @@
 		
 		//첫 페이지가 아니라면 처음 버튼을 생성
 		if($page != 1) { 
-			$paging .= '<li class="page page_start"><a href="./index.php?page=1' . $subString . '">처음</a></li>';
+			$paging .= '<li class="page page_start"><a href="./index.php?tbname=' . $tbname . "&page=1" . $subString . '">처음</a></li>';
 		}
 		//첫 섹션이 아니라면 이전 버튼을 생성
 		if($currentSection != 1) { 
-			$paging .= '<li class="page page_prev"><a href="./index.php?page=' . $prevPage . $subString . '">이전</a></li>';
+			$paging .= '<li class="page page_prev"><a href="./index.php?tbname=' . $tbname . "&page=" . $prevPage . $subString . '">이전</a></li>';
 		}
 		
 		for($i = $firstPage; $i <= $lastPage; $i++) {
 			if($i == $page) {
 				$paging .= '<li class="page current">' . $i . '</li>';
 			} else {
-				$paging .= '<li class="page"><a href="./index.php?page=' . $i . $subString . '">' . $i . '</a></li>';
+				$paging .= '<li class="page"><a href="./index.php?tbname=' . $tbname ."&page=" . $i . $subString . '">' . $i . '</a></li>';
 			}
 		}
 		
 		//마지막 섹션이 아니라면 다음 버튼을 생성
 		if($currentSection != $allSection) { 
-			$paging .= '<li class="page page_next"><a href="./index.php?page=' . $nextPage . $subString . '">다음</a></li>';
+			$paging .= '<li class="page page_next"><a href="./index.php?tbname=' . $tbname ."&page=" . $nextPage . $subString . '">다음</a></li>';
 		}
 		
 		//마지막 페이지가 아니라면 끝 버튼을 생성
 		if($page != $allPage) { 
-			$paging .= '<li class="page page_end"><a href="./index.php?page=' . $allPage . $subString . '">끝</a></li>';
+			$paging .= '<li class="page page_end"><a href="./index.php?tbname=' . $tbname . "&page=" . $allPage . $subString . '">끝</a></li>';
 		}
 		$paging .= '</ul>';
 		

@@ -1,5 +1,6 @@
 <?php
 	require_once("dbconfig.php");
+	
 	//관리자 세션 없으면 못들어옴.
 	if(!$_SESSION["session_id"]=="root")
 	{
@@ -104,14 +105,9 @@
 			Switch ($b_type)
 			{
 				case TEXT: $field_type='varchar(300)'; break;
-				case URL: $field_type='text'; break;
-				case EMAIL: $field_type='varchar(80)'; break;
-				case PHONE: $field_type='varchar(12)'; break;
-				case CHECKBOX: $field_type='varchar(50)'; break;
-				case SELECT: $field_type='varchar(50)'; break;
-				case RADIO: $field_type='varchar(50)'; break;
-				case ZIP: $field_type='varchar(200)'; break;
-				case DATE: $field_type='varchar(20)'; break;
+				case URL: $field_type='varchar(300)'; break;
+				case TEXTAREA: $field_type='text'; break;
+				case IMG: $field_type='varchar(300)'; break;
 			}
 			
 			echo $b_type;
