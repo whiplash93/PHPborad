@@ -1,6 +1,10 @@
 <?php
 	require_once("dbconfig.php");
+<<<<<<< HEAD
 	
+=======
+	session_start();
+>>>>>>> origin/master
 	//관리자 세션 없으면 못들어옴.
 	if(!$_SESSION["session_id"]=="root")
 	{

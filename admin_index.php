@@ -1,6 +1,6 @@
 <?php
 require_once("dbconfig.php");
-
+session_start();
 $query = " select * from tb_board order by id ";
 $result = $db->query($query);
 
