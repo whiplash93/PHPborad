@@ -1,7 +1,6 @@
 <?php
 	require_once("dbconfig.php");
-	session_start();
-	echo "zzzzzzzzzzz".$_SESSION["session_id"];
+	
 	if(isset($_GET['tbname'])) {
 		$tbname = $_GET['tbname'];
 	} else {

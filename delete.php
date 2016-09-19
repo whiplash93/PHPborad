@@ -1,6 +1,6 @@
 <?php
 	require_once("dbconfig.php");
-	session_start();
+
 	//$_GET['bno']이 있어야만 글삭제가 가능함.
 	if(isset($_GET['bno'])) {
 		$bNo = $_GET['bno'];
