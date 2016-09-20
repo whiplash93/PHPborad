@@ -7,6 +7,9 @@ if(!$_SESSION["session_id"]=="root")
 {
 	echo "<script>alert('관리자만 접근할 수 있습니다.');location.href='index.php';</script>";
 }
+$tableName = $_REQUEST['tableName'];
+$description = $_REQUEST['description'];
+$mode = $_REQUEST['mode'];
 //테이블 생성 
 	if ($mode=="create"){
 		$sql = "create table $tableName (
@@ -162,16 +165,16 @@ if(!$_SESSION["session_id"]=="root")
 						
 					{?>
 						<tr align="center" >
-							<td><?php echo $row['b_fname']?></td>
-							<td>
+							<td><?php echo $row['b_fname']?></td><!-- 필드명 -->
+							<td><!--형식-->
 							<?php 
 								$b_type = explode(",", $row['b_type']); 	 //콤마로 형식뒤에 있는 자료들을 잘라서 b_type변수에 [배열]로 저장한다. //
-								$b_type[0] == '' ? $type= TEXT :  $type = $b_type[0];
+								$b_type[0] == '' ? $type= TEXT :  $type = $b_type[0]; //공백이면 TEXT로 공백이 아니면 긁어온 타입으로 
 								echo $type;
 							?>
 							</td>
 							<input type ="hidden" name="b_fname[<?php echo $i?>]" value="<?php echo $row['b_fname']?>">
-							<td>
+							<td><!-- 노출여부 -->
 							<?php if ($row['b_visible'] == "1") { ?>
 													<input type="radio"  name="visible[<?= $i ?>]" checked="on"  value="true">노출
 													<input type="radio"  name="visible[<?= $i ?>]" value="false">노출안함
@@ -184,31 +187,14 @@ if(!$_SESSION["session_id"]=="root")
 							<?php   //테이블 수정하기 상태에서 필드네임 매개변수로 넘어온게 지금 돌리고있는 쿼리의 Field명과 일치한다면 /  즉 수정버튼을 눌렀을때를 말함.
 										if($mode=="update" && $desc ==  $row['b_description'] && $desc != '' ){?>
 														<input type="hidden" name="before_field_name" class="textfield" id="field_0_3" type="text" value="<?=  $row['b_description']?>">
-												<td><input name="update_field_name" class="textfield" id="field_0_3" type="text" value="<?= $row['b_description']?>"></td>
+												<td><input name="update_field_name" class="textfield" id="field_0_3" type="text" value="<?= $row['b_description']?>"></td><!-- 제목(수정눌렀을때) -->
 						<?php     }else{?>
-												<td><?php echo $row['b_description'];?></td> 
+												<td><?php echo $row['b_description'];?></td> <!-- 제목(일반상태)-->
 							<?php } ?>
-							<td>
+							<td><!-- 입력시 설명-->
 							<?php 
 							$row['b_destitle'] =='' ? $title = "　" : $title = $row['b_destitle'];
 							echo $title;
-							?>
-							</td>
-							<td>
-							<?php 
-							if(isset($b_type[1]))
-							{
-								echo $b_type[1];
-							}
-							else
-								echo "　";
-							for($j=2;$j<20;$j++)
-							{
-								if(isset($b_type[$j]))
-								{
-									echo ','.$b_type[$j];
-								}
-							}
 							?>
 							</td>
 						<td> 

@@ -6,7 +6,7 @@
 	{
 		echo "<script>alert('관리자만 접근할 수 있습니다.');location.href='index.php';</script>";
 	}
-		
+	$mode = $_REQUEST['mode'];
 
 		
 //컬럼 이름변경
@@ -16,7 +16,7 @@
 			$type = $_POST['update_field_type'];
 			$update_fdname = $_POST['update_field_name'];
 			
-			$sql = "UPDATE  tb_view SET b_description = '$update' WHERE b_description = '$before' AND b_tbname = '$tbname'";
+			$sql = "UPDATE  tb_view SET b_description = '$update_fdname' WHERE b_description = '$before_fdname' AND b_tbname = '$tbname'";
 			$result = $db->query($sql);
 			if ($result){
 				?>
@@ -37,6 +37,20 @@
 		
 //실제 테이블 뷰 순서변경
 		if ($mode == 'visiblechange'){//모드 매개변수가 visiblechange즉 노출설정 변경모드라면
+			
+			foreach($_REQUEST["b_fname"] as $key=>$val) :
+						if(trim($val)) :
+								$b_fname[$key] = trim($val);
+						endif;
+			endforeach;
+			
+			foreach($_REQUEST["visible"] as $key=>$val) :
+						if(trim($val)) :
+								$visible[$key] = trim($val);
+						endif;
+			endforeach;
+			
+			
 			$i=1;
 			while (isset($b_fname[$i])){
 				if($visible[$i] == 'true') {
@@ -50,8 +64,8 @@
  				$i++;
  				?>
  				<script>
- 				alert('노출설정을 변경하였습니다.');
- 				location.replace("./admin_process.php?mode=update&tbname=<?= $tbname?>");
+ 					alert('노출설정을 변경하였습니다.');
+ 					location.replace("./admin_process.php?mode=update&tbname=<?= $tbname?>");
  				</script>
  				<?php 
 			}
@@ -60,6 +74,7 @@
 //테이블 컬럼 순서변경 모드
 		if($mode == 'sequp'){
 			//b_seq는 admin process에서 넘겨주는 매개변수 b_seq 의 값이다.
+			$seq = $_REQUEST['seq'];
 			$nummin = $seq-1; //b_seq는 admin process에서 넘겨주는 매개변수 b_seq 의 값이다.
 			$sql =  "UPDATE  tb_view SET b_seq= 0 WHERE b_tbname = '$tbname' AND b_seq = $nummin";
 			$result = $db->query($sql);
@@ -82,6 +97,7 @@
 		
 		if($mode == 'seqdown'){ //순서 변경중 내리기 작업
 			//b_seq는 admin process에서 넘겨주는 매개변수 b_seq 의 값이다.
+			$seq = $_REQUEST['seq'];
 			$numplus = $seq+1; //b_seq는 admin process에서 넘겨주는 매개변수 b_seq 의 값이다.
 			$sql =  "UPDATE  tb_view SET b_seq= 0 WHERE b_tbname = '$tbname' AND b_seq = $numplus";
 			$result = $db->query($sql);

@@ -1,7 +1,16 @@
 <?php
 	require_once("dbconfig.php");
+
+	$mode = $_REQUEST['mode'];
+	
+	//$_POST['bno']이 있을 때만 $bno 선언
+	if(isset($_POST['bno'])) {
+		$bNo = $_POST['bno'];
+	}
+	
 	//글 수정에서 삭제버튼 누르면 파일 삭제
 	if($mode == 'update'){
+		
 		$sql = "SELECT * from $tbname where b_no = $bNo";
 		$result = $db->query($sql);
 		echo $sql;
@@ -33,10 +42,8 @@
 
 
 	}
-	//$_POST['bno']이 있을 때만 $bno 선언
-	if(isset($_POST['bno'])) {
-		$bNo = $_POST['bno'];
-	}
+	
+
 
 	$bPassword = $_POST['bPassword'];
 

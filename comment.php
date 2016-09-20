@@ -1,4 +1,7 @@
 <?php
+	$bNo = $_REQUEST['bno'];
+	$tbname = $_REQUEST['tbname'];
+	
 	$sql = "select * from tb_freecomment where co_no=co_order and b_no=$bNo and b_name='$tbname'";
 	$result = $db->query($sql);
 	//실제 sql에 들어가게 되는 쿼리 ex) select * from tb_freecomment where co_no=co_order and b_no=44 and b_name='tb_freeboard'
