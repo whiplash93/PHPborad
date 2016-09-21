@@ -117,7 +117,16 @@
 				</script>
 <?php }
 		}
-		if($mode == 'add_column'){
+		if($mode == 'add_column'){ //컬럼 추가 모드
+			$b_type = $_REQUEST['b_type'];
+			$field_type = $_REQUEST['field_type'];
+			$field_default_type = $_REQUEST['field_default_type'];
+			$field_null = $_REQUEST['field_null'];
+			$field_extra = $_REQUEST['field_extra'];
+			$field_name = $_REQUEST['field_name'];
+			$field_default_value  = $_REQUEST['field_default_value'];
+			$field_desc = $_REQUEST['field_desc'];
+			$field_destitle = $_REQUEST['field_destitle'];
 			Switch ($b_type)
 			{
 				case TEXT: $field_type='varchar(300)'; break;

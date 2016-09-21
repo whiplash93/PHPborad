@@ -64,6 +64,9 @@ $mode = $_REQUEST['mode'];
 	}
 	//컬럼 삭제
 	else if($mode=="delete_field"){
+		
+		$fname = $_REQUEST['fname'];
+		
 		$sql = "SELECT b_seq FROM tb_view WHERE b_fname = '$fname'";
 		echo $sql;
 		$result = $db->query($sql);
