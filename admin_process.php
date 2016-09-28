@@ -65,7 +65,7 @@ $mode = $_REQUEST['mode'];
 	//컬럼 삭제
 	else if($mode=="delete_field"){
 		
-		$fname = $_REQUEST['fname'];
+		$fname = $_REQUEST['b_fname'];
 		
 		$sql = "SELECT b_seq FROM tb_view WHERE b_fname = '$fname'";
 		echo $sql;
@@ -144,10 +144,15 @@ $mode = $_REQUEST['mode'];
  <?php 
 		$query = "SELECT * FROM tb_view WHERE b_tbname = '$tbname' ORDER BY b_seq";
 		$result = $db->query($query);
+		
 		$count = "select count(b_seq) as cnt from tb_view where b_tbname = '$tbname'";
 		$res = $db->query($count);
 		$row = $res->fetch_assoc();
 		$count = $row['cnt'];
+		
+		$query = "SELECT b_fname FROM tb_view WHERE b_tbname = '$tbname' AND b_chksoo='1'";
+		$chksoo = $db->query($query);
+		$chksoo = $chksoo->fetch_assoc();
 		?>
 		</p>
 		<form name="tb_view" method="post" action="admin_field_process.php?mode=visiblechange&tbname=<?php echo $tbname?>">
@@ -161,6 +166,7 @@ $mode = $_REQUEST['mode'];
 							<td>입력시 설명</td>
 							<td>순서변경</td>
 							<td colspan=2>명령</td>
+							<td>수량필드</td>
 						</tr>
 					<?php
 					$i=1;
@@ -221,9 +227,19 @@ $mode = $_REQUEST['mode'];
 										if($mode=="update" && $desc ==  $row['b_description']){?> <!-- 필드네임값이 있으면. 즉 컬럼 수정하기 버튼을 누른 후. -->
 											<td><input type="button" Onclick="Update_desc()"  value="수정"></td>
 										<?php }?>
-										<td><a href="#" Onclick="location.href='admin_process.php?mode=delete_field&desc=<?php echo $row['b_description']?>&fname=<?php echo $row['b_fname']?>&tbname=<?php echo $tbname?>'" >삭제</a></td>
-									</tr>
+										<td><a href="#" Onclick="location.href='admin_process.php?mode=delete_field&desc=<?php echo $row['b_description']?>&b_fname=<?php echo $row['b_fname']?>&tbname=<?php echo $tbname?>'" >삭제</a></td>
+									
+									
+									
+						<td><?php if($row['b_fname']==$chksoo['b_fname']) 
+							{ 		echo '<b>체크</b>';}
+								  else{?>
+									<a href="#" Onclick="location.href='admin_field_process.php?mode=chksoo&b_fname=<?php echo $row['b_fname']?>&tbname=<?php echo $tbname?>'">변경</a>
+								<?php }?>
+						</td>
+						</tr>
 						 <?php }?>
+						 
 					</table>
 					<input type="submit" value="노출여부 저장" >
 		</form>
@@ -247,6 +263,7 @@ $mode = $_REQUEST['mode'];
 							<option value="TEXTAREA">여러줄 입력칸(textarea)</option>
 							<option value="IMG">이미지(img)</option>
 							<option value="URL">URL형식(url)</option>
+							<option value="chksoo">*수량</option>
 						</select>
 					</td>
 				</tr>

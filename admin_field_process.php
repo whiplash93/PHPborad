@@ -7,7 +7,7 @@
 		echo "<script>alert('관리자만 접근할 수 있습니다.');location.href='index.php';</script>";
 	}
 	$mode = $_REQUEST['mode'];
-
+	//tbname 은 dbconfig 에서 받아옴.
 		
 //컬럼 이름변경
 		if ($mode == 'fd_update'){
@@ -71,7 +71,7 @@
 			}
 		}
 		
-//테이블 컬럼 순서변경 모드
+//순서변경 모드 중 순서올리기
 		if($mode == 'sequp'){
 			//b_seq는 admin process에서 넘겨주는 매개변수 b_seq 의 값이다.
 			$seq = $_REQUEST['seq'];
@@ -94,8 +94,8 @@
 					</script>
 <?php }
 		}
-		
-		if($mode == 'seqdown'){ //순서 변경중 내리기 작업
+//순서 변경모드 중 순서내리기		
+		if($mode == 'seqdown'){
 			//b_seq는 admin process에서 넘겨주는 매개변수 b_seq 의 값이다.
 			$seq = $_REQUEST['seq'];
 			$numplus = $seq+1; //b_seq는 admin process에서 넘겨주는 매개변수 b_seq 의 값이다.
@@ -117,7 +117,8 @@
 				</script>
 <?php }
 		}
-		if($mode == 'add_column'){ //컬럼 추가 모드
+//컬럼 추가 모드
+		if($mode == 'add_column'){
 			$b_type = $_REQUEST['b_type'];
 			$field_type = $_REQUEST['field_type'];
 			$field_default_type = $_REQUEST['field_default_type'];
@@ -133,6 +134,8 @@
 				case URL: $field_type='varchar(300)'; break;
 				case TEXTAREA: $field_type='text'; break;
 				case IMG: $field_type='varchar(300)'; break;
+				case chksoo: $field_type='int(11)'; $b_type = 'TEXT'; break;
+				
 			}
 			
 			echo $b_type;
@@ -156,7 +159,7 @@
 				{
 					$b_type .= ','.$field_default_value;
 				}
-				$sql = "INSERT INTO tb_view(b_fname, b_tbname, b_type, b_visible, b_seq, b_description, b_destitle) VALUES ('$field_name', '$tbname', '$b_type', 1, $count, '$field_desc','$field_destitle')";
+				$sql = "INSERT INTO tb_view(b_fname, b_tbname, b_type, b_visible, b_seq, b_description, b_destitle, b_chksoo) VALUES ('$field_name', '$tbname', '$b_type', 1, $count, '$field_desc','$field_destitle','')";
 				$result = $db->query($sql);
 				?>
 							<script>
@@ -171,6 +174,59 @@
 								location.replace("./admin_process.php?mode=update&tbname=<?php echo $tbname?>");
 							</script>
 							<?php 
-						} 
-					}
+						}
+		}// 컬럼 추가모드 끝
+//수량 필드변경
+		if($mode == 'chksoo'){
+			$b_fname = $_REQUEST["b_fname"];
+			
+			$query = " DESC $tbname"; //테이블 정보 조회 여기선 데이터타입을 가져오기 위함
+			$result = $db->query($query);
+			while($row = $result->fetch_assoc()){
+				//echo '필드네임 : '.$row['Field'].' 타입 : '.$row['Type'];
+				if($row['Field']==$b_fname && $row['Type'] =='int(11)'){
+					echo '필드네임 : '.$row['Field'].' 타입 : '.$row['Type'];
+					echo '데이터타입 검사완료 int';
+					$check = 1;
+					continue;
+				}
+				elseif ($row['Field']==$b_fname && $row['Type'] <>'int(11)'){
+					?>
+						<script>
+							alert('데이터 타입이 int 형이 아니므로 수량필드로 선택할 수 없습니다.');
+							location.replace("./admin_process.php?mode=update&tbname=<?php echo $tbname?>");
+						</script>
+					<?php 
+				}
+			}
+			
+			if($check == 1) {
+				echo "b_fname:".$b_fname;
+				$sql = "SELECT b_fname FROM tb_view WHERE b_tbname = '$tbname' AND b_chksoo='1'";
+				$result = $db->query($sql);
+				$chksoo = $result->fetch_assoc();
+				$chksoo = $chksoo['b_fname'];
+				echo "chksoo :".$chksoo;
+				//$chksoo['b_fname'] 는 현재의 수량필드
+				
+				$sql = "UPDATE tb_view SET b_chksoo ='' WHERE b_fname = '$chksoo' AND b_tbname = '$tbname'";
+				$res = $db->query($sql);
+				echo $sql;
+				$sql = "UPDATE tb_view SET b_chksoo ='1' WHERE b_fname = '$b_fname'  AND b_tbname = '$tbname'";
+				$res = $db->query($sql);
+				echo $sql;
+	
+					if ($res){?>
+						<script>
+							alert('수량필드가 변경되었습니다.');
+							location.replace("./admin_process.php?mode=update&tbname=<?php echo $tbname?>");
+						</script>
+					<?}else {?>
+						<script>
+							alert('수량필드가 변경되지못했습니다.');
+							location.replace("./admin_process.php?mode=update&tbname=<?php echo $tbname?>");
+						</script>
+					<?}
+			}
+		}
 ?>

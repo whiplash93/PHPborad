@@ -99,7 +99,10 @@ if(!empty($bNo) && empty($_COOKIE[$tbname.'_' . $bNo])) {
 	}//function
 	
 	
-	$src = $_SERVER['DOCUMENT_ROOT'].'/test/upload/'.$img_name;
+	//$src = $_SERVER['DOCUMENT_ROOT'].'/test/upload/'.$img_name;
+	$src = './upload/'.$img_name;
+
+	
 ?>
 <!DOCTYPE html>
 <html>
