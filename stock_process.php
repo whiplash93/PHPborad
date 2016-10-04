@@ -25,6 +25,7 @@ else {
 
 //입고작업
 function stock_in() {
+	global $no, $tbname, $db, $fname;
 	$sql = "SELECT * FROM $tbname WHERE b_no = $no"; //넘버를 이용해서 해당 번호의 수량필드를 검색 
 	$result = $db->query($sql);
 	$row = $result->fetch_assoc();
@@ -34,7 +35,7 @@ function stock_in() {
 	$res = $db->query($sql);		
 	?>
 	<script>
-		alert('입고 되었습니다. (현재 수량 : <?php $soo+1?>)');
+		alert('입고 되었습니다. (현재 수량 : <?php echo $soo+1?>)');
 		location.replace("./index.php?tbname=<?php echo $tbname?>");
 	</script>
 	<?
@@ -42,6 +43,7 @@ function stock_in() {
 
 //출고 작업
 function stock_out(){
+	global $no, $tbname, $db, $fname;
 	$sql = "SELECT * FROM $tbname WHERE b_no = $no"; //넘버를 이용해서 해당 번호의 수량필드를 검색 
 	$result = $db->query($sql);
 	$row = $result->fetch_assoc();
@@ -58,7 +60,7 @@ function stock_out(){
 		$res = $db->query($sql);
 		?>
 		<script>
-			alert('출고 되었습니다. (현재 수량 : <?php $soo-1?>)');
+			alert('출고 되었습니다. (현재 수량 : <?php echo $soo-1?>)');
 			location.replace("./index.php?tbname=<?php echo $tbname?>");
 		</script>
 		<?

@@ -1,17 +1,20 @@
 <?php
 	require_once("dbconfig.php");
 	require_once("img_view.php");
-	
 	//$_POST['bno']이 있을 때만 $bno 선언
 	if(isset($_POST['bno'])) {
 		$bNo = $_POST['bno'];
 	}
-
+	
+	$sql = "SELECT * FROM tb_view WHERE b_tbname = '$tbname' AND b_type = 'IMG' ";
+	$result = $db->query($sql);
+	$row = $result->fetch_assoc();
+	$b_fname = $row['b_fname'];
+	
 	//bno이 없다면(글 쓰기라면) 변수 선언
 	if(empty($bNo)) {
 		$bID = $_POST['bID'];
 		$date = date('Y-m-d H:i:s');
-		$tbname = $_GET['tbname'];
 	}
 	//항상 변수 선언
 	// 설정
@@ -20,13 +23,13 @@
 	$bTitle = $_POST['bTitle'];
 	$bContent = $_POST['bContent'];
 	$time = explode(' ',microtime());
-	$error = $_FILES['File']['error'];
-	$name = $_FILES['File']['name'];
+	$error = $_FILES[$b_fname]['error'];
+	$name = $_FILES[$b_fname]['name'];
 	$ext = array_pop(explode('.', $name));
-	$File = iconv("UTF-8","EUC-KR",$_FILES['File']['name']);	// 기존첨부파일명
+	$File = iconv("UTF-8","EUC-KR",$_FILES[$b_fname]['name']);	// 기존첨부파일명
 	if($File){ //파일 첨부가 되있다면
 //		$Filedate = $tbname.'_'.$time[1].substr($time[0],2,6);	// 새로운첨부파일명  테이블명_마이크로타임
-		$Filedate = $tbname.'_'.$_FILES['File']['name'];
+		$Filedate = $tbname.'_'.$_FILES[$b_fname]['name'];
 	}
 	
 	
@@ -72,10 +75,10 @@ if( $error != 4){
 	}
 }	
 	# 파일 업로드
-	echo "파일함수 출력 :::".$_FILES['File']['name'];
+	echo "파일함수 출력 :::".$_FILES[$b_fname]['name'];
 	$uploaddir = 'upload/';
-	$uploadfile = $uploaddir.basename($_FILES['File']['name']);
-	if(move_uploaded_file($_FILES['File']['tmp_name'], 'upload/'.$Filedate));{
+	$uploadfile = $uploaddir.basename($_FILES[$b_fname]['name']);
+	if(move_uploaded_file($_FILES[$b_fname]['tmp_name'], 'upload/'.$Filedate));{
 		echo "파일이 유효하고, 성공적으로 업로드 되었습니다.";
 	}
 	make_thumbnail("./upload/".$Filedate, 200, 200, "./upload/thum_".$Filedate);

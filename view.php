@@ -70,7 +70,8 @@ if(!empty($bNo) && empty($_COOKIE[$tbname.'_' . $bNo])) {
 			$image_name = $image;
 		
 			//이미지 전체경로를 포함한 이미지명
-			$image_path = $_SERVER['DOCUMENT_ROOT'].'/test/upload/'.$image;
+			//$image_path = $_SERVER['DOCUMENT_ROOT'].'/test/upload/'.$image;
+			$image_path = './upload/'.$image;
 			//넘어온 이미지경로의 존재여부와 파일여부 확인
 			echo "이미지경로:::".$image_path; 
 			if(file_exists($image_path) && is_file($image_path)) {
@@ -135,11 +136,8 @@ if(!empty($bNo) && empty($_COOKIE[$tbname.'_' . $bNo])) {
 	}?>
 	</table>
 				<a href="./write.php?tbname=<?php echo $tbname?>&bno=<?php echo $bNo?>">수정</a>
-				<a href="./delete.php?tbname=<?php echo $tbname?>&bno=<?php echo $bNo?>&filedate=<?php echo $filedate?>">삭제</a>
+				<a href="./delete.php?tbname=<?php echo $tbname?>&bno=<?php echo $bNo?>&filedate=<?php echo $img_row['b_filedate']?>">삭제</a>
 				<a href="./index.php?tbname=<?php echo $tbname?>">목록</a>
-		<div id="boardComment">
-			<?php require_once("./comment.php")?>
-		</div>
 		</div>
 	</article>
 </body>

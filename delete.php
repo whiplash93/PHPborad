@@ -5,6 +5,7 @@
 	if(isset($_GET['bno'])) {
 		$bNo = $_GET['bno'];
 	}
+	$filedate = $_GET['filedate'];
 	$sql = "select * from tb_board where name = '$tbname'";
 	$result = $db->query($sql);
 	$tb_row = $result->fetch_assoc();
@@ -27,14 +28,14 @@
 				$result = $db->query($sql);
 				$row = $result->fetch_assoc();
 				if(empty($row['cnt'])) {
-		?>
-		<script>
-			alert('글이 존재하지 않습니다.');
-			history.back();
-		</script>
-		<?php
-			exit;
-				}
+					?>
+					<script>
+						alert('글이 존재하지 않습니다.');
+						history.back();
+					</script>
+					<?php
+						exit;
+							}
 				
 				$sql = "select b_title from $tbname where b_no = $bNo";
 				$result = $db->query($sql);

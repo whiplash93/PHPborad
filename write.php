@@ -56,37 +56,43 @@
 								<?php } ?>
 							</td>
 						</tr>
-						<tr>
-							<th scope="row"><label for="bPassword">비밀번호</label></th>
-							<td class="password"><input type="password" name="bPassword" id="bPassword"></td>
-						</tr>
 						<?php while ($view_row = $result->fetch_assoc())
 	 							{$b_type = explode(",", $view_row['b_type']); 	 //콤마로 형식뒤에 있는 자료들을 잘라서 b_type변수에 [배열]로 저장한다. // count($b_type) 배열의 크기 구하기	
 	 							$cnt = count($b_type); //b_type형식은 ex) TEXT // TEXTAREA // IMG // URL 
+								
+	 							if($b_type[0] <> 'TEXT' && $b_type[0] <> 'TEXTAREA' && $b_type[0] <> 'IMG' && $b_type[0] <> 'URL')
+	 							{?>
+	 								<tr>
+	 									<th scope="row"><?php echo $view_row['b_description']?></th>
+	 									<td class="title"><input type="text" name="<?=  $view_row['b_fname']?>">
+	 							<?}
+	 							
 								if($b_type[0] == 'TEXT')
 								{?>
 								<tr>
 									<input type= "hidden" name= "b_fname" value="TEXT">
-									<th 	scope="row"><?php echo $view_row['b_description']?></th> 
-									<td class="title"><input type="text" name="<?=  $view_row['b_fname']?>">
+									<th scope="row"><?php echo $view_row['b_description']?></th> 
+									<td class="title"><input type="text" name="<?= $view_row['b_fname']?>" value="<?= isset($row[$view_row['b_fname']])?$row[$view_row['b_fname']]:null?>"></td>
 							<?}?>
 								<? if($b_type[0] == 'TEXTAREA')
 								{?>
 								<tr>
-									<th 	scope="row"><?php echo $view_row['b_description']?></th> 
-									<td class="title"><input type="textarea" name="<?=  $view_row['b_fname']?>">
+									<th scope="row"><?php echo $view_row['b_description']?></th> 
+									<td class="title"><input type="textarea" name="<?=  $view_row['b_fname']?>" value="<?= isset($row[$view_row['b_fname']])?$row[$view_row['b_fname']]:null?>"></td>
 							<?}?>
 								<? if($b_type[0] == 'IMG')
 								{?>
 								<tr>
-									<th 	scope="row"><?php echo $view_row['b_description']?></th>
-									<td class="title"><input type="file" name="<?=  $view_row['b_fname']?>">
+									<th scope="row"><?php echo $view_row['b_description']?></th>
+									<td class="title"><input type="file" name="<?= $view_row['b_fname']?>" value="<?= isset($row[$view_row['b_fname']])?$row[$view_row['b_fname']]:null?>">
+									<strong style='color:red; font-size:12px;'>★반드시 jpg, jpeg, png, gif 파일만 업로드 가능합니다.</strong><br />
+									</td>
 							<?}?>
 								<? if($b_type[0] == 'URL')
 								{?>
 								<tr>
-									<th 	scope="row"><?php echo $view_row['b_description']?></th>
-									<td class="title"><input type="text" name="<?=  $view_row['b_fname']?>">
+									<th scope="row"><?php echo $view_row['b_description']?></th>
+									<td class="title"><input type="text" name="<?=  $view_row['b_fname']?>" value="<?= isset($row[$view_row['b_fname']])?$row[$view_row['b_fname']]:null?>"></td>
 							<?}?>
 								</br>
 								<?= $view_row['b_destitle']?></td>
