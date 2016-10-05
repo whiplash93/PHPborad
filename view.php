@@ -10,7 +10,7 @@ if(!empty($bNo) && empty($_COOKIE[$tbname.'_' . $bNo])) {
 	if(empty($result)) {
 		?>
 			<script>
-				alert('오류가 발생했습니다.');
+				alert('오류가 발생했습니다. 조회수를 늘리지 못했습니다.');
 				history.back();
 			</script>
 			<?php 
@@ -18,12 +18,6 @@ if(!empty($bNo) && empty($_COOKIE[$tbname.'_' . $bNo])) {
 			setcookie($tbname.'_' . $bNo, TRUE, time() + (60 * 60 * 24), '/');
 		}
 	}
-	
-// 	$sql = "select b_title, b_content, b_date, b_hit, b_id, b_file, b_filedate from "."$tbname"." where b_no = ".$bNo;
-// 	$result = $db->query($sql);
-// 	$row = $result->fetch_assoc();
-// 	$filename = $row['b_file'];
-// 	$filedate = $row['b_filedate'];
 	
 	$sql = " select * from tb_board where name = '$tbname'";
 	$result = $db->query($sql);

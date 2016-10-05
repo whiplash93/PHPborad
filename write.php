@@ -16,7 +16,7 @@
 	$tb_row = $result->fetch_assoc();
 	$tbdesc = $tb_row[description];
 	
-	$sql = "SELECT * FROM tb_view WHERE b_tbname = '$tbname' AND b_fname != 'b_no' AND b_fname != 'b_hit' AND b_fname != 'b_date' AND b_fname != 'b_title'";
+	$sql = "SELECT * FROM tb_view WHERE b_tbname = '$tbname' AND b_fname != 'b_no' AND b_fname != 'b_hit' AND b_fname != 'b_date'";
 	$result = $db->query($sql);
 
 	
@@ -32,7 +32,7 @@
 </head>
 <body>
 	<article class="boardArticle">
-		<h3><?php echo $tbdesc?> 글쓰기</h3>
+		<h3><?php echo $tbdesc?> 목록추가</h3>
 		<div id="boardWrite">
 			<form action="./write_update.php?tbname=<?php echo $tbname?>" enctype='multipart/form-data' method="post">
 				<?php
@@ -44,93 +44,59 @@
 					<caption class="readHide"><?php echo $tbdesc?> 글쓰기</caption>
 					<tbody>
 						<tr>
-							<th scope="row"><label for="bID">아이디</label></th>
-							<td class="id">
-								<?php
-								if(isset($bNo)) //$bNo가 있다는건 수정버튼을 눌렀을때 라는것
-								{
-									echo $row['b_id'];
-								}
-								else { ?>
-									<input type="text" name="bID" id="bID">
-								<?php } ?>
 							</td>
 						</tr>
 						<?php while ($view_row = $result->fetch_assoc())
-	 							{$b_type = explode(",", $view_row['b_type']); 	 //콤마로 형식뒤에 있는 자료들을 잘라서 b_type변수에 [배열]로 저장한다. // count($b_type) 배열의 크기 구하기	
-	 							$cnt = count($b_type); //b_type형식은 ex) TEXT // TEXTAREA // IMG // URL 
-								
-	 							if($b_type[0] <> 'TEXT' && $b_type[0] <> 'TEXTAREA' && $b_type[0] <> 'IMG' && $b_type[0] <> 'URL')
+						{
+								$b_type = $view_row['b_type'];
+	 							if($b_type <> 'TEXT' && $b_type <> 'TEXTAREA' && $b_type <> 'IMG' && $b_type <> 'URL')
 	 							{?>
 	 								<tr>
 	 									<th scope="row"><?php echo $view_row['b_description']?></th>
-	 									<td class="title"><input type="text" name="<?=  $view_row['b_fname']?>">
+	 									<td class="title"><input type="text" name="<?=  $view_row['b_fname']?>" value="<?= isset($row[$view_row['b_fname']])?$row[$view_row['b_fname']]:null?>">
 	 							<?}
 	 							
-								if($b_type[0] == 'TEXT')
+								if($b_type == 'TEXT')
 								{?>
 								<tr>
 									<input type= "hidden" name= "b_fname" value="TEXT">
 									<th scope="row"><?php echo $view_row['b_description']?></th> 
-									<td class="title"><input type="text" name="<?= $view_row['b_fname']?>" value="<?= isset($row[$view_row['b_fname']])?$row[$view_row['b_fname']]:null?>"></td>
+									<td class="title"><input type="text" name="<?= $view_row['b_fname']?>" value="<?= isset($row[$view_row['b_fname']])?$row[$view_row['b_fname']]:null?>">
 							<?}?>
-								<? if($b_type[0] == 'TEXTAREA')
+								<? if($b_type == 'TEXTAREA')
 								{?>
 								<tr>
 									<th scope="row"><?php echo $view_row['b_description']?></th> 
-									<td class="title"><input type="textarea" name="<?=  $view_row['b_fname']?>" value="<?= isset($row[$view_row['b_fname']])?$row[$view_row['b_fname']]:null?>"></td>
+									<td class="content"><textarea id="bContent"  name="<?=$view_row['b_fname']?>"><?= isset($row[$view_row['b_fname']])?$row[$view_row['b_fname']]:null?></textarea>
 							<?}?>
-								<? if($b_type[0] == 'IMG')
+								<? if($b_type == 'IMG')
 								{?>
 								<tr>
 									<th scope="row"><?php echo $view_row['b_description']?></th>
-									<td class="title"><input type="file" name="<?= $view_row['b_fname']?>" value="<?= isset($row[$view_row['b_fname']])?$row[$view_row['b_fname']]:null?>">
+									<td class="title"><input type="file" size='20' name="<?= $view_row['b_fname']?>"></br>
+									<?php
+									if(isset($row[$view_row['b_fname']]))
+									{?>
+											<?php echo $row[$view_row['b_fname']];?>
+											<a href="#" onClick="location.href='delete_update.php?bNo=<?php echo $bNo?>&mode=update&tbname=<?php echo $tbname?>'">삭제</a>
+						<?php }?>
+									<strong style='color:red; font-size:12px;'>★기존에 등록했던 파일 이름</strong></br>
 									<strong style='color:red; font-size:12px;'>★반드시 jpg, jpeg, png, gif 파일만 업로드 가능합니다.</strong><br />
-									</td>
+									
 							<?}?>
-								<? if($b_type[0] == 'URL')
+								<? if($b_type == 'URL')
 								{?>
 								<tr>
 									<th scope="row"><?php echo $view_row['b_description']?></th>
-									<td class="title"><input type="text" name="<?=  $view_row['b_fname']?>" value="<?= isset($row[$view_row['b_fname']])?$row[$view_row['b_fname']]:null?>"></td>
+									<td class="title"><input type="text" name="<?=  $view_row['b_fname']?>" value="<?= isset($row[$view_row['b_fname']])?$row[$view_row['b_fname']]:null?>">
 							<?}?>
 								</br>
 								<?= $view_row['b_destitle']?></td>
 	 			<?php }?>
 	 					</tr>
-						<tr>
-							<th scope="row"><label for="bTitle">제목</label></th>
-							<td class="title"><input type="text" name="bTitle" id="bTitle" value="<?php echo isset($row['b_title'])?$row['b_title']:null?>"></td>
-						</tr>
-						<tr>
-							<th scope="row"><label for="bContent">내용</label></th>
-							<td class="content"><textarea name="bContent" id="bContent"><?php echo isset($row['b_content'])?$row['b_content']:null?></textarea></td>
-						</tr>
 						<? # 파일 업로드 시, 아래와 같이 name, id(꼭, "MAX_FILE_SIZE" 이여야 함) & value = 파일크기(즉, 1000 = 1KB) ?>
 						<input type="hidden" name="MAX_FILE_SIZE" id="MAX_FILE_SIZE" value="10000000" />
-						<tr>
-							<th>첨부파일</th>
-							<td>
-							<input type='file' name='File' id='File' size='20'>
-							<strong style='color:red; font-size:12px;'>★반드시 jpg, jpeg, png, gif 파일만 업로드 가능합니다.</strong><br />
-							<?php
-								# 'File'의 값이 true = 데이터 가져옴, 'File'의 값이 false = null
-								echo isset($row['b_file'])?$row['b_file']:null
-							?>
-							<input type="hidden" name="b_file" value="<?php  echo isset($row['b_file'])?$row['b_file']:null?>" />
-							<?php
-								# $idx 값이 존재한다면,
-								if(isset($bNo)){
-									# 'File'가 빈값이 아니면,
-									if($row['b_file'] != ""){
-										# '★기존에 등록했던 파일 이름' 메시지 출력
-										echo "<strong style='color:red; font-size:12px;'>★기존에 등록했던 파일 이름</strong>";
-										?><br/>
-										 <a href="#" onClick="location.href='delete_update.php?bNo=<?php echo $bNo?>&mode=update&tbname=<?php echo $tbname?>'">삭제</a>
-										<?php
-									}	
-								}
-							?>
+						<input type="hidden" name="b_file" value="<?php  echo isset($row['b_file'])?$row['b_file']:null?>" />
 							</td>
 						</tr>
 					</tbody>

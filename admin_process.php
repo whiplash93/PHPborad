@@ -17,32 +17,28 @@ $mode = $_REQUEST['mode'];
 				b_title varchar(100) not null,
 				b_content text not null,
 				b_date datetime not null,
-				b_hit int unsigned not null default 0,
-				b_id varchar(20) not null,
-				b_password varchar(100) not null,
 				b_file varchar(255) not null,
-				b_filedate varchar(255) not null
+				b_filedate varchar(255) not null,
+				b_soo int not null
 			   )";
 		$result = $db->query($sql);
-		
+		//테이블 만들기가 성공하였으면 일부 필드들을 tb_view에도 추가해줘야함.
 		if($result){
 			$sql = "insert into tb_board (name, description) VALUES('$tableName','$description')";
 			$result = $db->query($sql);
 			
-			//tb_view에도 추가해줘야함.
-			$sql = "insert into tb_view (b_fname, b_tbname, b_visible, b_seq, b_description)
-					values ('b_no', '$tableName', 1, 1, '번호')
-					,('b_title', '$tableName', 1, 2, '제목')
-					,('b_id', '$tableName', 1, 3, '작성자')
-					,('b_hit', '$tableName', 1, 4, '조회수')
-					,('b_date', '$tableName', 1, 5, '작성일')";
+			$sql = "insert into tb_view (b_fname, b_tbname, b_type, b_visible, b_seq, b_description, b_destitle, b_chksoo)
+					values ('b_no', '$tableName', '', 1, 1, '번호', '','')
+					,('b_title', '$tableName', '', 1, 2, '제목','','')
+					,('b_content', '$tableName', 'TEXTAREA', 1, 3, '내용','','')
+					,('b_date', '$tableName', 'DATE', 1, 4, '작성일','','')
+					,('b_file', '$tableName', 'IMG', 1, 5, '파일','','')
+					,('b_soo', '$tableName', 'TEXT', 1, 6, '작성일','','1')";
+			echo $sql;
 			$result = $db->query($sql);
-			
-			
 			echo "<script>alert('테이블을 생성하였습니다.');location.href='admin_index.php';</script>"; 
 			//테이블생성 성공
-		}
-		else {"<script>alert('테이블을 생성실패.');location.href='admin_index.php';</script>";
+		}else {"<script>alert('테이블을 생성실패.');location.href='admin_index.php';</script>";
 		} //테이블생성 실패
 	}
 		//테이블 삭제

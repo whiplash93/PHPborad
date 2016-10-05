@@ -10,7 +10,7 @@
 	$result = $db->query($sql);
 	$row = $result->fetch_assoc();
 	$b_fname = $row['b_fname'];
-	
+	echo '$b_fname : '.$b_fname;
 	//bno이 없다면(글 쓰기라면) 변수 선언
 	if(empty($bNo)) {
 		$bID = $_POST['bID'];
@@ -18,22 +18,51 @@
 	}
 	//항상 변수 선언
 	// 설정
+	
+	$sql = "SELECT * FROM tb_view WHERE b_tbname = '$tbname' AND  b_fname != 'b_no'  "; //번호를 제외한 모든 다른 필드를 검색
+	$result = $db->query($sql);
+	echo "여기까지 실행됨";
+	$i = 0;
+	while ($array_row = $result->fetch_assoc())//추가된 컬럼 하나씩 쿼리돌려서 $ary_qur 에 저장
+	{ 
+		if($array_row['b_type'] =='DATE' )
+		{
+			$value = $date;
+		}elseif($array_row['b_type'] =='IMG' )
+		{
+			$value = $_FILES[$b_fname]['name'];
+		}else
+		{
+			$value = $_POST[$array_row['b_fname']];
+		}
+		echo "value출력  : ". $value;
+		$fname = $array_row['b_fname']; //b_aa, b_bb, b_cc, b_dd.....
+		
+		if ($i == 0)
+		{
+			$ary_qur = "$fname = '$value'";
+		}
+		else
+		{
+			$ary_qur .= ", $fname = '$value'";
+		}
+		$i++;
+	}
+	echo '$ary_qur : '.$ary_qur;
+	
+	
 	$allowed_ext = array('jpg','jpeg','png','PNG','gif','JPG','JPEG','GIT');
-	$bPassword = $_POST['bPassword'];
-	$bTitle = $_POST['bTitle'];
-	$bContent = $_POST['bContent'];
 	$time = explode(' ',microtime());
 	$error = $_FILES[$b_fname]['error'];
 	$name = $_FILES[$b_fname]['name'];
 	$ext = array_pop(explode('.', $name));
-	$File = iconv("UTF-8","EUC-KR",$_FILES[$b_fname]['name']);	// 기존첨부파일명
+	$File = iconv("UTF-8","cp949",$_FILES[$b_fname]['name']);	// 기존첨부파일명
+	$File = $_FILES[$b_fname]['name'];	// 기존첨부파일명
+	echo '$File : '.$File;
 	if($File){ //파일 첨부가 되있다면
 //		$Filedate = $tbname.'_'.$time[1].substr($time[0],2,6);	// 새로운첨부파일명  테이블명_마이크로타임
 		$Filedate = $tbname.'_'.$_FILES[$b_fname]['name'];
 	}
-	
-	
-
 
 if( $error != 4){	
 	// 오류 확인 //4번은 파일이 첨부되지 않은경우. 위는 파일이 있으면...
@@ -76,67 +105,32 @@ if( $error != 4){
 }	
 	# 파일 업로드
 	echo "파일함수 출력 :::".$_FILES[$b_fname]['name'];
-	$uploaddir = 'upload/';
+	$uploaddir = './upload/';
 	$uploadfile = $uploaddir.basename($_FILES[$b_fname]['name']);
-	if(move_uploaded_file($_FILES[$b_fname]['tmp_name'], 'upload/'.$Filedate));{
+	if(move_uploaded_file($_FILES[$b_fname]['tmp_name'], './upload/'.$Filedate));{
 		echo "파일이 유효하고, 성공적으로 업로드 되었습니다.";
 	}
 	make_thumbnail("./upload/".$Filedate, 200, 200, "./upload/thum_".$Filedate);
 	
 //글 수정
-if(isset($bNo)) {
-	//수정 할 글의 비밀번호가 입력된 비밀번호와 맞는지 체크
-	$sql = 'select count(b_password) as cnt from ' . $tbname . ' where b_password=password("' . $bPassword . '") and b_no = ' . $bNo;
-	$result = $db->query($sql);
-	$row = $result->fetch_assoc();
-	
-	//비밀번호가 맞다면 업데이트 쿼리 작성
-	if($row['cnt']) {
-		if($b_file==''){
-		$sql = 'update ' . $tbname . ' set b_title="' . $bTitle . '", b_content="' . $bContent . '", b_file="' . $name . '", b_filedate="' . $Filedate .'" where b_no = ' . $bNo;
-		echo $sql;
-		}
-		else{
-		$sql = 'update ' . $tbname . ' set b_title="' . $bTitle . '", b_content="' . $bContent . '" where b_no = ' . $bNo;
-		echo "b_file : $b_file";
-		echo $sql;
-		}
-		$msgState = '수정';
-	//틀리다면 메시지 출력 후 이전화면으로
-	} else {
-		$msg = '비밀번호가 맞지 않습니다.';
-	?>
-		<script>
-			alert("<?php echo $msg?>");
-			history.back();
-		</script>
-	<?php
-		exit;
-	}
+if(isset($bNo)) 
+{
+	$sql = "UPDATE  '$tbname' SET $ary_qur  WHERE  b_no =  $bNo";
+	echo $sql;
+	$msgState = '수정';
 
 //글 등록
 } else {
 	
-	$sql = "insert into $tbname (b_no, b_title, b_content, b_date, b_hit, b_id, b_password, b_file, b_filedate) values(null, '$bTitle', '$bContent', '$date', 0, '$bID', password('$bPassword'), '$name', '$Filedate' )";
-		$msgState = '등록';
+	$sql = "INSERT INTO $tbname (b_no) VALUES (null)";
+	$msgState = '등록';
 	}
 	$result = $db->query($sql);
 	$bNo = $db->insert_id;
-	$sql = "SELECT * FROM tb_view WHERE b_tbname = '$tbname' AND b_fname != 'b_id' AND b_fname != 'b_no' AND b_fname != 'b_hit' 
-	AND b_fname != 'b_date' AND b_fname != 'b_title' AND b_fname != 'b_file' AND b_fname != 'b_content' 'b_id' 
-	AND b_fname != 'b_no' AND b_fname != 'b_hit' AND b_fname != 'b_date' AND b_fname != 'b_title' AND b_fname != 'b_file' 
-	AND b_fname != 'b_content' AND b_fname != 'b_filedate' AND b_fname != 'b_password' ";
-	$result = $db->query($sql);
-	echo "여기까지 실행돠ㅣㅁ";
-	while ($array_row = $result->fetch_assoc())//추가된 컬럼 하나씩 쿼리돌려서 그안에 값넣음.
-	{
-		$value = $_POST[$array_row['b_fname']];
-		echo "value출력  : ". $value;
-		$fname = $array_row['b_fname']; //b_aa, b_bb, b_cc, b_dd.....
-		$sql = "UPDATE $tbname SET $fname = '$value' WHERE b_no = $bNo";
-		$res_up = $db->query($sql);
-		echo "sql 출력 :".$sql;
-	}
+
+	$sql = "UPDATE $tbname SET b_filedate = '$Filedate' , $ary_qur WHERE b_no = $bNo";
+	$res_up = $db->query($sql);
+	echo "sql 출력 :".$sql;
 
 //메시지가 없다면 (오류가 없다면)
 if(empty($msg)) {
