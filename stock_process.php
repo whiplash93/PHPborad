@@ -1,4 +1,6 @@
 <?php
+//입고 http://localhost/test/stock_process.php?bno=59&mode=in&tbname=tb_test
+//출고 http://localhost/test/stock_process.php?bno=59&mode=out&tbname=tb_test
 require_once("dbconfig.php");
 $no = $_GET['bno'];
 $sql = "SELECT * FROM tb_view WHERE b_chksoo = '1'"; // $row['b_fname']

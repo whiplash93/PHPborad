@@ -230,7 +230,7 @@
 									<?}
 								 		else
 										{?>
-											<td class="add"><?= $row[$b_fname[$a]]?></td>
+											<td class="add" align="center"><?= $row[$b_fname[$a]]?></td>
 									<?} 
 				  			 }?>
 						</tr>

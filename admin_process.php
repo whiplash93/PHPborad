@@ -33,7 +33,7 @@ $mode = $_REQUEST['mode'];
 					,('b_content', '$tableName', 'TEXTAREA', 1, 3, '내용','','')
 					,('b_date', '$tableName', 'DATE', 1, 4, '작성일','','')
 					,('b_file', '$tableName', 'IMG', 1, 5, '파일','','')
-					,('b_soo', '$tableName', 'TEXT', 1, 6, '작성일','','1')";
+					,('b_soo', '$tableName', 'TEXT', 1, 6, '수량','수량을 입력하세요','1')";
 			echo $sql;
 			$result = $db->query($sql);
 			echo "<script>alert('테이블을 생성하였습니다.');location.href='admin_index.php';</script>"; 
@@ -60,8 +60,13 @@ $mode = $_REQUEST['mode'];
 	}
 	//컬럼 삭제
 	else if($mode=="delete_field"){
-		
 		$fname = $_REQUEST['b_fname'];
+
+		if($fname == 'b_no' || $fname == 'b_soo' )
+		{
+			echo "<script>alert('번호 또는 수량필드는 삭제할 수 없습니다.');history.go(-1);</script>";
+			exit();
+		}
 		
 		$sql = "SELECT b_seq FROM tb_view WHERE b_fname = '$fname'";
 		echo $sql;
@@ -162,7 +167,7 @@ $mode = $_REQUEST['mode'];
 							<td>입력시 설명</td>
 							<td>순서변경</td>
 							<td colspan=2>명령</td>
-							<td>수량필드</td>
+							<!-- <td>수량필드</td> -->
 						</tr>
 					<?php
 					$i=1;
@@ -226,13 +231,13 @@ $mode = $_REQUEST['mode'];
 										<td><a href="#" Onclick="location.href='admin_process.php?mode=delete_field&desc=<?php echo $row['b_description']?>&b_fname=<?php echo $row['b_fname']?>&tbname=<?php echo $tbname?>'" >삭제</a></td>
 									
 									
-									
+									<!-- 
 						<td><?php if($row['b_fname']==$chksoo['b_fname']) 
 							{ 		echo '<b>체크</b>';}
 								  else{?>
 									<a href="#" Onclick="location.href='admin_field_process.php?mode=chksoo&b_fname=<?php echo $row['b_fname']?>&tbname=<?php echo $tbname?>'">변경</a>
 								<?php }?>
-						</td>
+						</td> -->
 						</tr>
 						 <?php }?>
 						 
@@ -259,7 +264,7 @@ $mode = $_REQUEST['mode'];
 							<option value="TEXTAREA">여러줄 입력칸(textarea)</option>
 							<option value="IMG">이미지(img)</option>
 							<option value="URL">URL형식(url)</option>
-							<option value="chksoo">*수량</option>
+							<!-- <option value="chksoo">*수량</option>  -->
 						</select>
 					</td>
 				</tr>

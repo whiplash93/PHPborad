@@ -4,7 +4,7 @@ require_once("dbconfig.php");
 $query = "select b_file, b_filedate from $tbname where b_no=".$_GET['num'];
 $result = $db->query($query);
 $row = $result->fetch_assoc();
-
+$filename = $row['b_file'];
 $b_filedate = $row['b_filedate'];
 
 $dir = "./upload/";

@@ -60,57 +60,56 @@
 	$File = $_FILES[$b_fname]['name'];	// 기존첨부파일명
 	echo '$File : '.$File;
 	if($File){ //파일 첨부가 되있다면
-//		$Filedate = $tbname.'_'.$time[1].substr($time[0],2,6);	// 새로운첨부파일명  테이블명_마이크로타임
-		$Filedate = $tbname.'_'.$_FILES[$b_fname]['name'];
-	}
-
-if( $error != 4){	
-	// 오류 확인 //4번은 파일이 첨부되지 않은경우. 위는 파일이 있으면...
-	if( $error != UPLOAD_ERR_OK ) {
-		switch( $error ) {
-			case UPLOAD_ERR_INI_SIZE:
-			case UPLOAD_ERR_FORM_SIZE:
-				echo ("<script>
+		$Filedate = $tbname.'_'.$time[1].substr($time[0],2,6).'.'.$ext[0].$ext[1].$ext[2];	// 새로운첨부파일명  테이블명_마이크로타임.확장자
+//		$Filedate = $tbname.'_'.$_FILES[$b_fname]['name'];
+		if( $error != 4){
+			// 오류 확인 //4번은 파일이 첨부되지 않은경우. 위는 파일이 있으면...
+			if( $error != UPLOAD_ERR_OK ) {
+				switch( $error ) {
+					case UPLOAD_ERR_INI_SIZE:
+					case UPLOAD_ERR_FORM_SIZE:
+						echo ("<script>
 						alert('파일 용량이 너무 큽니다!');
 						history.go(-1);
 						</script>");
+						exit;
+						break;
+						// 			case UPLOAD_ERR_NO_FILE:
+						// 				echo "파일이 첨부되지 않았습니다. ($error)";
+		
+						// 				break;
+					default:
+						//echo "파일이 제대로 업로드되지 않았습니다. ($error)";
+						// 				echo ("<script>
+						// 						alert('파일이 제대로 업로드되지 않았습니다.');
+						// 						history.go(-1);
+						// 						</script>");
+						// 				exit;
+						echo "파일이 첨부되지 않았습니다. ($error)";
+						break;
+				}
 				exit;
-				break;
-// 			case UPLOAD_ERR_NO_FILE:
-// 				echo "파일이 첨부되지 않았습니다. ($error)";
-				
-// 				break;
-			default:
-				//echo "파일이 제대로 업로드되지 않았습니다. ($error)";
-// 				echo ("<script>
-// 						alert('파일이 제대로 업로드되지 않았습니다.');
-// 						history.go(-1);
-// 						</script>");
-// 				exit;
-				echo "파일이 첨부되지 않았습니다. ($error)";
-				break;
-		}
-		exit;
-	}
-	
-	// 확장자 확인
-	if( !in_array($ext, $allowed_ext) ) {
-		//echo "허용되지 않는 확장자입니다.";
-		echo ("<script>
+			}
+		
+			// 확장자 확인
+			if( !in_array($ext, $allowed_ext) ) {
+				//echo "허용되지 않는 확장자입니다.";
+				echo ("<script>
 				alert('허용되지 않는 확장자입니다. jpg, jpeg, png, gif 파일만 업로드 가능합니다.');
 				history.go(-1);
 				</script>");
-		exit;
+				exit;
+			}
+		}
+		# 파일 업로드
+		echo "파일함수 출력 :::".$_FILES[$b_fname]['name'];
+		$uploaddir = './upload/';
+		$uploadfile = $uploaddir.basename($_FILES[$b_fname]['name']);
+		if(move_uploaded_file($_FILES[$b_fname]['tmp_name'], './upload/'.$Filedate));{
+			echo "파일이 유효하고, 성공적으로 업로드 되었습니다.";
+		}
+		make_thumbnail("./upload/".$Filedate, 200, 200, "./upload/thum_".$Filedate);
 	}
-}	
-	# 파일 업로드
-	echo "파일함수 출력 :::".$_FILES[$b_fname]['name'];
-	$uploaddir = './upload/';
-	$uploadfile = $uploaddir.basename($_FILES[$b_fname]['name']);
-	if(move_uploaded_file($_FILES[$b_fname]['tmp_name'], './upload/'.$Filedate));{
-		echo "파일이 유효하고, 성공적으로 업로드 되었습니다.";
-	}
-	make_thumbnail("./upload/".$Filedate, 200, 200, "./upload/thum_".$Filedate);
 	
 //글 수정
 if(isset($bNo)) 

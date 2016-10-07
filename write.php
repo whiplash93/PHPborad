@@ -16,7 +16,7 @@
 	$tb_row = $result->fetch_assoc();
 	$tbdesc = $tb_row[description];
 	
-	$sql = "SELECT * FROM tb_view WHERE b_tbname = '$tbname' AND b_fname != 'b_no' AND b_fname != 'b_hit' AND b_fname != 'b_date'";
+	$sql = "SELECT * FROM tb_view WHERE b_tbname = '$tbname' AND b_fname != 'b_no' AND b_fname != 'b_hit' AND b_fname != 'b_date' ORDER BY b_seq";
 	$result = $db->query($sql);
 
 	
@@ -79,8 +79,9 @@
 									{?>
 											<?php echo $row[$view_row['b_fname']];?>
 											<a href="#" onClick="location.href='delete_update.php?bNo=<?php echo $bNo?>&mode=update&tbname=<?php echo $tbname?>'">삭제</a>
+											<strong style='color:red; font-size:12px;'>★기존에 등록했던 파일 이름</strong></br>
 						<?php }?>
-									<strong style='color:red; font-size:12px;'>★기존에 등록했던 파일 이름</strong></br>
+									
 									<strong style='color:red; font-size:12px;'>★반드시 jpg, jpeg, png, gif 파일만 업로드 가능합니다.</strong><br />
 									
 							<?}?>

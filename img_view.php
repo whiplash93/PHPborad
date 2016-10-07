@@ -42,7 +42,7 @@ function make_thumbnail($source_path, $width, $height, $thumbnail_path){
     if ($thumbnail_path) {
         if ($type==1) imagegif($img_last, $thumbnail_path, 100);
         else if ($type==2 ) imagejpeg($img_last, $thumbnail_path, 100);
-        else if ($type==3 ) imagepng($img_last, $thumbnail_path, 100);
+        else if ($type==3 ) imagepng($img_last, $thumbnail_path, 9);
         else if ($type==15) imagebmp($img_last, $thumbnail_path, 100);
     } else {
         if ($type==1) imagegif($img_last);
