@@ -135,10 +135,15 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta charset="utf-8" />
 	<title>PHP게시판 활용</title>
 	<link rel="stylesheet" href="./css/normalize.css" />
 	<link rel="stylesheet" href="./css/board.css" />
+	<link href="css/bootstrap.min.css" rel="stylesheet">
+	
 	<script>
 	function OpenWindow(file_name,width,height)
 	{
@@ -147,6 +152,8 @@
 	</script>
 </head>
 <body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
 <!-- 상단 테이블 나열 -->
 	<article class="boardArticle">
 		<center>|<?php 
@@ -171,7 +178,7 @@
 				<thead>
 					<tr>
 					<?php for($i =1; $i < $k; $i++) {?>
-						<th scope="col" class="<?php echo $class_array[$i]?>"><?php echo $b_description[$i]?></th>
+						<th scope="col" class="no<?php echo $class_array[$i]?>"><?php echo $b_description[$i]?></th>
 						<?php }?>
 					</tr>
 				</thead>

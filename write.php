@@ -25,10 +25,16 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="utf-8" />
+	<meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 	<title><?php echo $tbdesc?> </title>
 	<link rel="stylesheet" href="./css/normalize.css" />
 	<link rel="stylesheet" href="./css/board.css" />
+	<link href="css/bootstrap.min.css" rel="stylesheet">
+	
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
 </head>
 <body>
 	<article class="boardArticle">
@@ -53,7 +59,7 @@
 	 							{?>
 	 								<tr>
 	 									<th scope="row"><?php echo $view_row['b_description']?></th>
-	 									<td class="title"><input type="text" name="<?=  $view_row['b_fname']?>" value="<?= isset($row[$view_row['b_fname']])?$row[$view_row['b_fname']]:null?>">
+	 									<td class="title"><input type="text"  name="<?=  $view_row['b_fname']?>" value="<?= isset($row[$view_row['b_fname']])?$row[$view_row['b_fname']]:null?>">
 	 							<?}
 	 							
 								if($b_type == 'TEXT')
