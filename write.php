@@ -59,7 +59,7 @@
 	 							{?>
 	 								<tr>
 	 									<th scope="row"><?php echo $view_row['b_description']?></th>
-	 									<td class="title"><input type="text"  name="<?=  $view_row['b_fname']?>" value="<?= isset($row[$view_row['b_fname']])?$row[$view_row['b_fname']]:null?>">
+	 									<td class="title"><input type="text"  class="form-control" name="<?=  $view_row['b_fname']?>" value="<?= isset($row[$view_row['b_fname']])?$row[$view_row['b_fname']]:null?>">
 	 							<?}
 	 							
 								if($b_type == 'TEXT')
@@ -67,19 +67,19 @@
 								<tr>
 									<input type= "hidden" name= "b_fname" value="TEXT">
 									<th scope="row"><?php echo $view_row['b_description']?></th> 
-									<td class="title"><input type="text" name="<?= $view_row['b_fname']?>" value="<?= isset($row[$view_row['b_fname']])?$row[$view_row['b_fname']]:null?>">
+									<td class="title"><input type="text" class="form-control" name="<?= $view_row['b_fname']?>" value="<?= isset($row[$view_row['b_fname']])?$row[$view_row['b_fname']]:null?>">
 							<?}?>
 								<? if($b_type == 'TEXTAREA')
 								{?>
 								<tr>
 									<th scope="row"><?php echo $view_row['b_description']?></th> 
-									<td class="content"><textarea id="bContent"  name="<?=$view_row['b_fname']?>"><?= isset($row[$view_row['b_fname']])?$row[$view_row['b_fname']]:null?></textarea>
+									<td class="content"><textarea id="bContent"  class="form-control"  name="<?=$view_row['b_fname']?>"><?= isset($row[$view_row['b_fname']])?$row[$view_row['b_fname']]:null?></textarea>
 							<?}?>
 								<? if($b_type == 'IMG')
 								{?>
 								<tr>
 									<th scope="row"><?php echo $view_row['b_description']?></th>
-									<td class="title"><input type="file" size='20' name="<?= $view_row['b_fname']?>"></br>
+									<td class="title"><input type="file" class="file"  size='20' name="<?= $view_row['b_fname']?>"></br>
 									<?php
 									if(isset($row[$view_row['b_fname']]))
 									{?>
@@ -95,9 +95,8 @@
 								{?>
 								<tr>
 									<th scope="row"><?php echo $view_row['b_description']?></th>
-									<td class="title"><input type="text" name="<?=  $view_row['b_fname']?>" value="<?= isset($row[$view_row['b_fname']])?$row[$view_row['b_fname']]:null?>">
+									<td class="title"><input type="text" class="form-control" name="<?=  $view_row['b_fname']?>" value="<?= isset($row[$view_row['b_fname']])?$row[$view_row['b_fname']]:null?>">
 							<?}?>
-								</br>
 								<?= $view_row['b_destitle']?></td>
 	 			<?php }?>
 	 					</tr>

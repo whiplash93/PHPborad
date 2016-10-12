@@ -150,6 +150,12 @@
 	 window.open(file_name,'open_win1','top=100,left=100,width='+width+',height='+height+',scrollbars=no');
 	}
 	</script>
+	<style>
+	caption { 
+    	display: table-caption;
+    	text-align: center;
+	}
+	</style>
 </head>
 <body>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
